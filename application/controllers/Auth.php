@@ -66,6 +66,7 @@ class Auth extends MY_Controller
         }
 
         $email = strtolower(trim($this->input->post('email', true)));
+
         if ($this->Utente_model->trova_per_email($email))
         {
             $data['errore'] = 'Questa email è già registrata.';
@@ -141,6 +142,12 @@ class Auth extends MY_Controller
 
     private function redirect_post_login()
     {
+        if ($this->ruolo_utente() === 'superadmin')
+        {
+            redirect('superadmin');
+            return;
+        }
+
         if ($this->ruolo_utente() === 'admin')
         {
             redirect('admin');

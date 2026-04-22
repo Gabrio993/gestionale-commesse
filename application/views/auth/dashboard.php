@@ -18,7 +18,11 @@
             <h1>Area riservata</h1>
             <p>Benvenuto, <strong><?= html_escape($nome_utente ?? '') ?></strong>.</p>
             <p class="meta"><?= html_escape($email_utente ?? '') ?></p>
-            <a href="<?= site_url('auth/logout') ?>">Logout</a>
+            <div class="grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+                <a href="<?= site_url('commesse') ?>">Vedi commesse</a>
+                <a href="<?= site_url('ore/mie') ?>">Le mie ore</a>
+                <a href="<?= site_url('auth/logout') ?>">Logout</a>
+            </div>
         </div>
     </div>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
+    <title>Superadmin</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; background: #f4f6f8; color: #1f2937; }
         .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
@@ -16,7 +16,7 @@
 <body>
     <div class="wrap">
         <div class="card">
-            <h1>Area admin</h1>
+            <h1>Area superadmin</h1>
             <p>Benvenuto, <strong><?= html_escape($nome_utente ?? '') ?></strong>.</p>
             <p class="meta"><?= html_escape($email_utente ?? '') ?></p>
 
@@ -25,7 +25,7 @@
                 <a class="button" href="<?= site_url('clienti/nuovo') ?>">Nuovo cliente</a>
                 <a class="button" href="<?= site_url('commesse') ?>">Gestione commesse</a>
                 <a class="button" href="<?= site_url('commesse/nuova') ?>">Nuova commessa</a>
-                <a class="button" href="<?= site_url('admin/utenti') ?>">Gestione utenti</a>
+                <a class="button" href="<?= site_url('superadmin/utenti') ?>">Gestione ruoli utenti</a>
                 <a class="button" href="<?= site_url('auth/logout') ?>">Logout</a>
             </div>
         </div>

@@ -8,6 +8,12 @@ class Dashboard extends MY_Controller
     {
         $this->richiedi_login();
 
+        if ($this->ruolo_utente() === 'superadmin')
+        {
+            redirect('superadmin');
+            return;
+        }
+
         if ($this->ruolo_utente() === 'admin')
         {
             redirect('admin');

@@ -49,7 +49,18 @@ class MY_Controller extends CI_Controller
     {
         $this->richiedi_login();
 
-        if ($this->ruolo_utente() !== 'admin')
+        if ( ! in_array($this->ruolo_utente(), array('admin', 'superadmin'), true))
+        {
+            show_error('Accesso non autorizzato.', 403);
+            exit;
+        }
+    }
+
+    protected function richiedi_superadmin()
+    {
+        $this->richiedi_login();
+
+        if ($this->ruolo_utente() !== 'superadmin')
         {
             show_error('Accesso non autorizzato.', 403);
             exit;
