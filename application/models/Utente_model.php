@@ -19,4 +19,12 @@ class Utente_model extends MY_Model
     {
         return $this->db->insert($this->table, $dati);
     }
+
+    public function tutti()
+    {
+        return $this->db
+            ->order_by('id', 'DESC')
+            ->get($this->table)
+            ->result();
+    }
 }

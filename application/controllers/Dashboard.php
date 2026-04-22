@@ -6,15 +6,18 @@ class Dashboard extends MY_Controller
 {
     public function index()
     {
-        if ( ! $this->session->userdata('utente_id'))
+        $this->richiedi_login();
+
+        if ($this->ruolo_utente() === 'admin')
         {
-            redirect('/');
+            redirect('admin');
             return;
         }
 
         $data = array(
             'nome_utente' => $this->session->userdata('utente_nome'),
             'email_utente' => $this->session->userdata('utente_email'),
+            'ruolo_utente' => $this->session->userdata('utente_ruolo'),
         );
 
         $this->load->view('auth/dashboard', $data);

@@ -25,4 +25,34 @@ class MY_Controller extends CI_Controller
         parent::__construct();
         $this->load->library('session');
     }
+
+    protected function utente_loggato()
+    {
+        return (bool) $this->session->userdata('utente_id');
+    }
+
+    protected function ruolo_utente()
+    {
+        return (string) $this->session->userdata('utente_ruolo');
+    }
+
+    protected function richiedi_login()
+    {
+        if ( ! $this->utente_loggato())
+        {
+            redirect('/');
+            exit;
+        }
+    }
+
+    protected function richiedi_admin()
+    {
+        $this->richiedi_login();
+
+        if ($this->ruolo_utente() !== 'admin')
+        {
+            show_error('Accesso non autorizzato.', 403);
+            exit;
+        }
+    }
 }

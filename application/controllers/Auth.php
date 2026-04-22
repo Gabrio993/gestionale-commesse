@@ -14,9 +14,9 @@ class Auth extends MY_Controller
 
     public function index()
     {
-        if ($this->session->userdata('utente_id'))
+        if ($this->utente_loggato())
         {
-            redirect('dashboard');
+            $this->redirect_post_login();
             return;
         }
 
@@ -25,9 +25,9 @@ class Auth extends MY_Controller
 
     public function login()
     {
-        if ($this->session->userdata('utente_id'))
+        if ($this->utente_loggato())
         {
-            redirect('dashboard');
+            $this->redirect_post_login();
             return;
         }
 
@@ -36,9 +36,9 @@ class Auth extends MY_Controller
 
     public function registrati()
     {
-        if ($this->session->userdata('utente_id'))
+        if ($this->utente_loggato())
         {
-            redirect('dashboard');
+            $this->redirect_post_login();
             return;
         }
 
@@ -47,9 +47,9 @@ class Auth extends MY_Controller
 
     public function salva_registrazione()
     {
-        if ($this->session->userdata('utente_id'))
+        if ($this->utente_loggato())
         {
-            redirect('dashboard');
+            $this->redirect_post_login();
             return;
         }
 
@@ -90,9 +90,9 @@ class Auth extends MY_Controller
 
     public function autentica()
     {
-        if ($this->session->userdata('utente_id'))
+        if ($this->utente_loggato())
         {
-            redirect('dashboard');
+            $this->redirect_post_login();
             return;
         }
 
@@ -123,7 +123,7 @@ class Auth extends MY_Controller
             'utente_ruolo' => $utente->ruolo,
         ));
 
-        redirect('dashboard');
+        $this->redirect_post_login();
     }
 
     public function logout()
@@ -137,5 +137,16 @@ class Auth extends MY_Controller
 
         $this->session->sess_destroy();
         redirect('/');
+    }
+
+    private function redirect_post_login()
+    {
+        if ($this->ruolo_utente() === 'admin')
+        {
+            redirect('admin');
+            return;
+        }
+
+        redirect('dashboard');
     }
 }
