@@ -4,24 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; background: #f4f6f8; color: #1f2937; }
-        .wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        a { display: inline-block; margin-top: 16px; padding: 12px 16px; border-radius: 10px; background: #111827; color: #fff; text-decoration: none; font-weight: 700; }
-        .meta { color: #6b7280; }
-    </style>
+    <?php $this->load->view('partials/ui'); ?>
 </head>
 <body>
-    <div class="wrap">
-        <div class="card">
-            <h1>Area riservata</h1>
-            <p>Benvenuto, <strong><?= html_escape($nome_utente ?? '') ?></strong>.</p>
-            <p class="meta"><?= html_escape($email_utente ?? '') ?></p>
-            <div class="grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
-                <a href="<?= site_url('commesse') ?>">Vedi commesse</a>
-                <a href="<?= site_url('ore/mie') ?>">Le mie ore</a>
-                <a href="<?= site_url('auth/logout') ?>">Logout</a>
+    <?php $this->load->view('partials/navigation'); ?>
+
+    <div class="app-wrap">
+        <div class="app-card">
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title">Benvenuto, <?= html_escape($nome_utente ?? '') ?></h1>
+                    <p class="page-subtitle">Da qui puoi vedere le tue commesse, le ore inserite e i report base.</p>
+                </div>
+                <span class="badge success"><?= html_escape($ruolo_utente ?? 'utente') ?></span>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="label">Commessa</div>
+                    <div class="value">Ore</div>
+                    <p class="page-subtitle">Vai all'elenco delle commesse attive.</p>
+                    <div class="actions-inline">
+                        <a class="btn primary" href="<?= site_url('commesse') ?>">Apri commesse</a>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Le mie ore</div>
+                    <div class="value">Storico</div>
+                    <p class="page-subtitle">Controlla e correggi le tue registrazioni.</p>
+                    <div class="actions-inline">
+                        <a class="btn primary" href="<?= site_url('ore/mie') ?>">Apri ore</a>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Report</div>
+                    <div class="value">Base</div>
+                    <p class="page-subtitle">Riepilogo ore, commesse e ultimi inserimenti.</p>
+                    <div class="actions-inline">
+                        <a class="btn primary" href="<?= site_url('reporti') ?>">Apri report</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

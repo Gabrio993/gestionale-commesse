@@ -8,6 +8,7 @@ class Clienti extends MY_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
+        $this->load->helper('form');
         $this->load->model('Cliente_model');
     }
 
@@ -28,6 +29,12 @@ class Clienti extends MY_Controller
     public function salva()
     {
         $this->richiedi_admin();
+
+        if ($this->input->method(TRUE) !== 'POST')
+        {
+            show_error('Metodo non consentito.', 405);
+            return;
+        }
 
         $this->form_validation->set_rules('ragione_sociale', 'Ragione sociale', 'required|trim|max_length[150]');
         $this->form_validation->set_rules('partita_iva', 'Partita IVA', 'trim|max_length[20]');

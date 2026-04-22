@@ -4,42 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuovo cliente</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f4f6f8; color: #1f2937; }
-        .card { width: min(92vw, 520px); background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        label { display: block; margin: 14px 0 6px; font-weight: 700; }
-        input, textarea { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }
-        textarea { min-height: 110px; }
-        button, .link { display: inline-block; margin-top: 16px; padding: 12px 16px; border-radius: 10px; border: 0; text-decoration: none; font-weight: 700; cursor: pointer; }
-        button { background: #111827; color: #fff; }
-        .link { background: #e5e7eb; color: #111827; }
-        .err { margin: 12px 0 0; color: #b91c1c; }
-    </style>
+    <?php $this->load->view('partials/ui'); ?>
 </head>
 <body>
-    <div class="card">
-        <h1>Nuovo cliente</h1>
-        <?= validation_errors('<div class="err">', '</div>') ?>
+    <?php $this->load->view('partials/navigation'); ?>
 
-        <form method="post" action="<?= site_url('clienti/salva') ?>">
-            <label>Ragione sociale</label>
-            <input type="text" name="ragione_sociale" value="<?= html_escape($this->input->post('ragione_sociale', true)) ?>" required>
+    <div class="app-wrap">
+        <div class="app-card" style="max-width: 760px; margin: 0 auto;">
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title">Nuovo cliente</h1>
+                    <p class="page-subtitle">Inserisci i dati anagrafici del cliente.</p>
+                </div>
+                <a class="btn secondary" href="<?= site_url('clienti') ?>">Torna ai clienti</a>
+            </div>
 
-            <label>Partita IVA</label>
-            <input type="text" name="partita_iva" value="<?= html_escape($this->input->post('partita_iva', true)) ?>">
+            <?= validation_errors('<div class="notice error">', '</div>') ?>
 
-            <label>Codice fiscale</label>
-            <input type="text" name="codice_fiscale" value="<?= html_escape($this->input->post('codice_fiscale', true)) ?>">
-
-            <label>Indirizzo</label>
-            <input type="text" name="indirizzo" value="<?= html_escape($this->input->post('indirizzo', true)) ?>">
-
-            <label>Note</label>
-            <textarea name="note"><?= html_escape($this->input->post('note', true)) ?></textarea>
-
-            <button type="submit">Salva</button>
-            <a class="link" href="<?= site_url('clienti') ?>">Annulla</a>
-        </form>
+            <form method="post" action="<?= site_url('clienti/salva') ?>" class="form-grid">
+                <div class="field">
+                    <label>Ragione sociale</label>
+                    <input type="text" name="ragione_sociale" value="<?= html_escape($this->input->post('ragione_sociale', true)) ?>" required>
+                </div>
+                <div class="field">
+                    <label>Partita IVA</label>
+                    <input type="text" name="partita_iva" value="<?= html_escape($this->input->post('partita_iva', true)) ?>">
+                </div>
+                <div class="field">
+                    <label>Codice fiscale</label>
+                    <input type="text" name="codice_fiscale" value="<?= html_escape($this->input->post('codice_fiscale', true)) ?>">
+                </div>
+                <div class="field">
+                    <label>Indirizzo</label>
+                    <input type="text" name="indirizzo" value="<?= html_escape($this->input->post('indirizzo', true)) ?>">
+                </div>
+                <div class="field">
+                    <label>Note</label>
+                    <textarea name="note"><?= html_escape($this->input->post('note', true)) ?></textarea>
+                </div>
+                <div class="actions-inline">
+                    <button class="btn primary" type="submit">Salva cliente</button>
+                    <a class="btn secondary" href="<?= site_url('clienti') ?>">Annulla</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -4,51 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clienti</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
-        .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
-        th { background: #f9fafb; }
-        a { display: inline-block; margin-top: 16px; text-decoration: none; color: #111827; font-weight: 700; }
-    </style>
+    <?php $this->load->view('partials/ui'); ?>
 </head>
 <body>
-    <div class="wrap">
-        <div class="card">
-            <h1>Clienti</h1>
-            <a href="<?= site_url('clienti/nuovo') ?>">Nuovo cliente</a>
-            <a href="<?= site_url('admin') ?>">Torna indietro</a>
+    <?php $this->load->view('partials/navigation'); ?>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Ragione sociale</th>
-                        <th>Partita IVA</th>
-                        <th>Codice fiscale</th>
-                        <th>Attivo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (! empty($clienti)): ?>
-                        <?php foreach ($clienti as $cliente): ?>
-                            <tr>
-                                <td><?= (int) $cliente->id ?></td>
-                                <td><?= html_escape($cliente->ragione_sociale) ?></td>
-                                <td><?= html_escape($cliente->partita_iva) ?></td>
-                                <td><?= html_escape($cliente->codice_fiscale) ?></td>
-                                <td><?= (int) $cliente->attivo ? 'Sì' : 'No' ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+    <div class="app-wrap">
+        <div class="app-card">
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title">Clienti</h1>
+                    <p class="page-subtitle">Anagrafica clienti collegata alle commesse.</p>
+                </div>
+                <div class="actions-inline">
+                    <a class="btn primary" href="<?= site_url('clienti/nuovo') ?>">Nuovo cliente</a>
+                    <a class="btn secondary" href="<?= site_url('admin') ?>">Dashboard</a>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td colspan="5">Nessun cliente presente.</td>
+                            <th>ID</th>
+                            <th>Ragione sociale</th>
+                            <th>Partita IVA</th>
+                            <th>Codice fiscale</th>
+                            <th>Attivo</th>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php if (! empty($clienti)): ?>
+                            <?php foreach ($clienti as $cliente): ?>
+                                <tr>
+                                    <td><?= (int) $cliente->id ?></td>
+                                    <td><?= html_escape($cliente->ragione_sociale) ?></td>
+                                    <td><?= html_escape($cliente->partita_iva) ?></td>
+                                    <td><?= html_escape($cliente->codice_fiscale) ?></td>
+                                    <td><?= (int) $cliente->attivo ? '<span class="badge success">Sì</span>' : '<span class="badge danger">No</span>' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="5">Nessun cliente presente.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>

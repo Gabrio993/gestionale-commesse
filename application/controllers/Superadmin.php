@@ -35,6 +35,11 @@ class Superadmin extends Admin
     public function cambia_ruolo()
     {
         $this->richiedi_superadmin();
+        if ($this->input->method(TRUE) !== 'POST')
+        {
+            show_error('Metodo non consentito.', 405);
+            return;
+        }
         $this->load->library('form_validation');
         $this->load->model('Utente_model');
 

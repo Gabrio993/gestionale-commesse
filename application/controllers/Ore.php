@@ -8,6 +8,7 @@ class Ore extends MY_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
+        $this->load->helper('form');
         $this->load->model('Commessa_model');
         $this->load->model('Registrazione_ore_model');
     }
@@ -16,7 +17,17 @@ class Ore extends MY_Controller
     {
         $this->richiedi_login();
 
-        $data['ore'] = $this->Registrazione_ore_model->per_utente($this->session->userdata('utente_id'));
+        $filtri = $this->leggi_filtri_periodo(true);
+        $utente_id = $this->session->userdata('utente_id');
+        $anno_corrente = (int) date('Y');
+        $mese_corrente = (int) date('n');
+        $data = array(
+            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'totale_ore_mese' => $this->Registrazione_ore_model->totale_ore_utente_mese($utente_id, $anno_corrente, $mese_corrente),
+            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'filtri' => $filtri,
+        );
         $this->load->view('ore/mie', $data);
     }
 
@@ -38,6 +49,12 @@ class Ore extends MY_Controller
     public function salva()
     {
         $this->richiedi_login();
+
+        if ($this->input->method(TRUE) !== 'POST')
+        {
+            show_error('Metodo non consentito.', 405);
+            return;
+        }
 
         $this->form_validation->set_rules('commessa_id', 'Commessa', 'required|integer');
         $this->form_validation->set_rules('data_lavoro', 'Data lavoro', 'required');
@@ -73,6 +90,7 @@ class Ore extends MY_Controller
         $this->richiedi_admin();
         $this->load->model('Utente_model');
 
+        $filtri = $this->leggi_filtri_periodo(false);
         $utente = $this->Utente_model->trova_per_id((int) $utente_id);
         if ( ! $utente)
         {
@@ -80,11 +98,143 @@ class Ore extends MY_Controller
             return;
         }
 
+        $anno_corrente = (int) date('Y');
+        $mese_corrente = (int) date('n');
         $data = array(
             'utente' => $utente,
-            'ore' => $this->Registrazione_ore_model->per_utente($utente_id),
+            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'totale_ore_mese' => $this->Registrazione_ore_model->totale_ore_utente_mese($utente_id, $anno_corrente, $mese_corrente),
+            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'filtri' => $filtri,
         );
 
         $this->load->view('ore/utente', $data);
+    }
+
+    public function modifica($id)
+    {
+        $this->richiedi_login();
+
+        $registrazione = $this->Registrazione_ore_model->trova($id);
+        if ( ! $registrazione)
+        {
+            show_404();
+            return;
+        }
+
+        if ( ! $this->puo_gestire_registrazione($registrazione))
+        {
+            show_error('Accesso non autorizzato.', 403);
+            return;
+        }
+
+        $data = array(
+            'registrazione' => $registrazione,
+            'commessa' => $this->Commessa_model->trova($registrazione->commessa_id),
+        );
+
+        $this->load->view('ore/modifica', $data);
+    }
+
+    public function aggiorna($id)
+    {
+        $this->richiedi_login();
+
+        if ($this->input->method(TRUE) !== 'POST')
+        {
+            show_error('Metodo non consentito.', 405);
+            return;
+        }
+
+        $registrazione = $this->Registrazione_ore_model->trova($id);
+        if ( ! $registrazione)
+        {
+            show_404();
+            return;
+        }
+
+        if ( ! $this->puo_gestire_registrazione($registrazione))
+        {
+            show_error('Accesso non autorizzato.', 403);
+            return;
+        }
+
+        $this->form_validation->set_rules('data_lavoro', 'Data lavoro', 'required');
+        $this->form_validation->set_rules('ore', 'Ore', 'required|numeric');
+
+        if ($this->form_validation->run() === false)
+        {
+            $data = array(
+                'registrazione' => $registrazione,
+                'commessa' => $this->Commessa_model->trova($registrazione->commessa_id),
+            );
+
+            $this->load->view('ore/modifica', $data);
+            return;
+        }
+
+        $this->Registrazione_ore_model->aggiorna($id, array(
+            'data_lavoro' => $this->input->post('data_lavoro', true),
+            'ore' => $this->input->post('ore', true),
+            'descrizione' => trim((string) $this->input->post('descrizione', true)) ?: null,
+        ));
+
+        redirect('ore/mie');
+    }
+
+    public function elimina($id)
+    {
+        $this->richiedi_login();
+
+        if ($this->input->method(TRUE) !== 'POST')
+        {
+            show_error('Metodo non consentito.', 405);
+            return;
+        }
+
+        $registrazione = $this->Registrazione_ore_model->trova($id);
+        if ( ! $registrazione)
+        {
+            show_404();
+            return;
+        }
+
+        if ( ! $this->puo_gestire_registrazione($registrazione))
+        {
+            show_error('Accesso non autorizzato.', 403);
+            return;
+        }
+
+        $this->Registrazione_ore_model->elimina($id);
+        redirect('ore/mie');
+    }
+
+    private function puo_gestire_registrazione($registrazione)
+    {
+        $ruolo = $this->ruolo_utente();
+        if (in_array($ruolo, array('admin', 'superadmin'), true))
+        {
+            return true;
+        }
+
+        return (int) $registrazione->utente_id === (int) $this->session->userdata('utente_id');
+    }
+
+    private function leggi_filtri_periodo($default_last_30_days = false)
+    {
+        $dal = trim((string) $this->input->get('dal', true));
+        $al = trim((string) $this->input->get('al', true));
+
+        if ($dal === '' && $al === '' && $default_last_30_days)
+        {
+            $al = date('Y-m-d');
+            $dal = date('Y-m-d', strtotime('-30 days'));
+        }
+
+        return array(
+            'dal' => $dal ?: null,
+            'al' => $al ?: null,
+        );
     }
 }

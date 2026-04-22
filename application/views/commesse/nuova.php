@@ -4,46 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuova commessa</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f4f6f8; color: #1f2937; }
-        .card { width: min(92vw, 560px); background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        label { display: block; margin: 14px 0 6px; font-weight: 700; }
-        input, textarea, select { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }
-        textarea { min-height: 110px; }
-        button, .link { display: inline-block; margin-top: 16px; padding: 12px 16px; border-radius: 10px; border: 0; text-decoration: none; font-weight: 700; cursor: pointer; }
-        button { background: #111827; color: #fff; }
-        .link { background: #e5e7eb; color: #111827; }
-        .err { margin: 12px 0 0; color: #b91c1c; }
-    </style>
+    <?php $this->load->view('partials/ui'); ?>
 </head>
 <body>
-    <div class="card">
-        <h1>Nuova commessa</h1>
-        <?= validation_errors('<div class="err">', '</div>') ?>
+    <?php $this->load->view('partials/navigation'); ?>
 
-        <form method="post" action="<?= site_url('commesse/salva') ?>">
-            <label>Cliente</label>
-            <select name="cliente_id" required>
-                <option value="">Seleziona un cliente</option>
-                <?php foreach ($clienti as $cliente): ?>
-                    <option value="<?= (int) $cliente->id ?>" <?= $this->input->post('cliente_id', true) == $cliente->id ? 'selected' : '' ?>>
-                        <?= html_escape($cliente->ragione_sociale) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+    <div class="app-wrap">
+        <div class="app-card" style="max-width: 820px; margin: 0 auto;">
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title">Nuova commessa</h1>
+                    <p class="page-subtitle">Collega la commessa a un cliente già presente.</p>
+                </div>
+                <a class="btn secondary" href="<?= site_url('commesse') ?>">Torna alle commesse</a>
+            </div>
 
-            <label>Codice commessa</label>
-            <input type="text" name="codice" value="<?= html_escape($this->input->post('codice', true)) ?>">
+            <?= validation_errors('<div class="notice error">', '</div>') ?>
 
-            <label>Nome</label>
-            <input type="text" name="nome" value="<?= html_escape($this->input->post('nome', true)) ?>" required>
-
-            <label>Descrizione</label>
-            <textarea name="descrizione"><?= html_escape($this->input->post('descrizione', true)) ?></textarea>
-
-            <button type="submit">Salva</button>
-            <a class="link" href="<?= site_url('commesse') ?>">Annulla</a>
-        </form>
+            <form method="post" action="<?= site_url('commesse/salva') ?>" class="form-grid">
+                <div class="field">
+                    <label>Cliente</label>
+                    <select name="cliente_id" required>
+                        <option value="">Seleziona un cliente</option>
+                        <?php foreach ($clienti as $cliente): ?>
+                            <option value="<?= (int) $cliente->id ?>" <?= $this->input->post('cliente_id', true) == $cliente->id ? 'selected' : '' ?>>
+                                <?= html_escape($cliente->ragione_sociale) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Codice commessa</label>
+                    <input type="text" name="codice" value="<?= html_escape($this->input->post('codice', true)) ?>" placeholder="Es. PRJ-001">
+                </div>
+                <div class="field">
+                    <label>Attività</label>
+                    <input type="text" name="attivita" value="<?= html_escape($this->input->post('attivita', true)) ?>" required placeholder="Es. Palinsesti">
+                </div>
+                <div class="field">
+                    <label>Descrizione</label>
+                    <textarea name="descrizione"><?= html_escape($this->input->post('descrizione', true)) ?></textarea>
+                </div>
+                <div class="actions-inline">
+                    <button class="btn primary" type="submit">Salva commessa</button>
+                    <a class="btn secondary" href="<?= site_url('commesse') ?>">Annulla</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

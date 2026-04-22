@@ -4,51 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ore utente</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f2937; }
-        .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
-        th { background: #f9fafb; }
-        a { display: inline-block; margin-top: 16px; text-decoration: none; color: #111827; font-weight: 700; }
-    </style>
+    <?php $this->load->view('partials/ui'); ?>
 </head>
 <body>
-    <div class="wrap">
-        <div class="card">
-            <h1>Ore di <?= html_escape(trim($utente->nome . ' ' . $utente->cognome)) ?></h1>
-            <p><?= html_escape($utente->email) ?></p>
-            <a href="<?= site_url('admin/utenti') ?>">Torna alla lista utenti</a>
+    <?php $this->load->view('partials/navigation'); ?>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Ore</th>
-                        <th>Commessa</th>
-                        <th>Cliente</th>
-                        <th>Note</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (! empty($ore)): ?>
-                        <?php foreach ($ore as $riga): ?>
-                            <tr>
-                                <td><?= html_escape($riga->data_lavoro) ?></td>
-                                <td><?= html_escape($riga->ore) ?></td>
-                                <td><?= html_escape($riga->commessa_codice . ' - ' . $riga->commessa_nome) ?></td>
-                                <td><?= html_escape($riga->cliente_ragione_sociale) ?></td>
-                                <td><?= html_escape($riga->descrizione) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+    <div class="app-wrap">
+        <div class="app-card">
+            <div class="page-head">
+                <div>
+                    <h1 class="page-title"><?= html_escape(trim($utente->nome . ' ' . $utente->cognome)) ?></h1>
+                    <p class="page-subtitle"><?= html_escape($utente->email) ?></p>
+                </div>
+                <div class="actions-inline">
+                    <a class="btn secondary" href="<?= site_url('admin/utenti') ?>">Lista utenti</a>
+                    <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="label">Totale ore</div>
+                    <div class="value"><?= number_format((float) $totale_ore, 2, ',', '.') ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Questo mese</div>
+                    <div class="value"><?= number_format((float) $totale_ore_mese, 2, ',', '.') ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Commesse toccate</div>
+                    <div class="value"><?= is_array($riepilogo_commesse) ? count($riepilogo_commesse) : 0 ?></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Riepilogo per commessa</h2>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td colspan="5">Nessuna ora registrata per questo utente.</td>
+                            <th>Commessa</th>
+                            <th>Attività</th>
+                            <th>Cliente</th>
+                            <th>Ore</th>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            <?php if (! empty($riepilogo_commesse)): ?>
+                            <?php foreach ($riepilogo_commesse as $riga): ?>
+                                <tr>
+                                        <td><?= html_escape($riga->codice) ?></td>
+                                        <td><?= html_escape($riga->attivita) ?></td>
+                                        <td><?= html_escape($riga->cliente_ragione_sociale) ?></td>
+                                        <td><strong><?= number_format((float) $riga->totale_ore, 2, ',', '.') ?></strong></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                                <tr><td colspan="4">Nessuna commessa registrata.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Dettaglio ore</h2>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Ore</th>
+                                <th>Commessa</th>
+                                <th>Attività</th>
+                                <th>Cliente</th>
+                                <th>Note</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (! empty($ore)): ?>
+                                <?php foreach ($ore as $riga): ?>
+                                    <tr>
+                                        <td><?= html_escape($riga->data_lavoro) ?></td>
+                                        <td><strong><?= html_escape($riga->ore) ?></strong></td>
+                                        <td><?= html_escape($riga->commessa_codice) ?></td>
+                                        <td><?= html_escape($riga->commessa_attivita) ?></td>
+                                        <td><?= html_escape($riga->cliente_ragione_sociale) ?></td>
+                                        <td><?= html_escape($riga->descrizione) ?></td>
+                                        <td>
+                                            <div class="actions-inline">
+                                                <a class="btn secondary" href="<?= site_url('ore/modifica/' . (int) $riga->id) ?>">Modifica</a>
+                                                <form method="post" action="<?= site_url('ore/elimina/' . (int) $riga->id) ?>" onsubmit="return confirm('Eliminare questa registrazione?');">
+                                                    <button class="btn danger" type="submit">Elimina</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="7">Nessuna ora registrata per questo utente.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </body>

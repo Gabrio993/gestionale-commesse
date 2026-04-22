@@ -18,6 +18,7 @@ class Commessa_model extends MY_Model
 
         return $this->db
             ->order_by('commesse.codice', 'ASC')
+            ->order_by('commesse.attivita', 'ASC')
             ->order_by('commesse.nome', 'ASC')
             ->get($this->table)
             ->result();
