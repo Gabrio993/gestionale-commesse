@@ -1,3 +1,4 @@
+<link rel="icon" type="image/png" href="<?= base_url('assets/images/auth-bg.png') ?>">
 <style>
     :root {
         --bg: #f4f6f8;
