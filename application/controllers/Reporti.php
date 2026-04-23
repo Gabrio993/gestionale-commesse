@@ -56,6 +56,7 @@ class Reporti extends MY_Controller
             'dal' => $filtri['dal'],
             'al' => $filtri['al'],
             'utente_id' => $utente_id,
+            'commessa_id' => $filtri['commessa_id'],
         );
 
         $data = array(
@@ -65,12 +66,13 @@ class Reporti extends MY_Controller
             'commesse' => $commesse,
             'totale_ore' => $this->Registrazione_ore_model->totale_filtrato($filtro_query),
             'totale_registrazioni' => count($this->Registrazione_ore_model->registrazioni_filtrate(array_merge($filtro_query, array('tipo' => 'personale')))),
-            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al'], $filtri['commessa_id']),
             'ultime_registrazioni' => $this->Registrazione_ore_model->registrazioni_filtrate(array(
                 'tipo' => 'personale',
                 'utente_id' => $utente_id,
                 'dal' => $filtri['dal'],
                 'al' => $filtri['al'],
+                'commessa_id' => $filtri['commessa_id'],
                 'limite' => 12,
             )),
         );

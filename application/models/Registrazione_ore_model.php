@@ -171,9 +171,14 @@ class Registrazione_ore_model extends MY_Model
     }
 
     // I riepiloghi raggruppano le ore con SUM e GROUP BY per ottenere report sintetici.
-    public function riepilogo_ore_per_commessa_utente($utente_id, $dal = null, $al = null)
+    public function riepilogo_ore_per_commessa_utente($utente_id, $dal = null, $al = null, $commessa_id = null)
     {
         $this->applichi_filtri_data($dal, $al);
+        if (! empty($commessa_id))
+        {
+            $this->db->where('registrazioni_ore.commessa_id', (int) $commessa_id);
+        }
+
         return $this->db
             ->select('commesse.id, commesse.codice, commesse.attivita, commesse.nome, clienti.ragione_sociale as cliente_ragione_sociale, SUM(registrazioni_ore.ore) as totale_ore', false)
             ->join('commesse', 'commesse.id = registrazioni_ore.commessa_id', 'left')
