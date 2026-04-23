@@ -135,6 +135,60 @@ class Auth extends MY_Controller
         $this->redirect_post_login();
     }
 
+    public function cambia_password()
+    {
+        $this->richiedi_login();
+
+        $data = array(
+            'nome_utente' => $this->session->userdata('utente_nome'),
+            'email_utente' => $this->session->userdata('utente_email'),
+            'ruolo_utente' => $this->session->userdata('utente_ruolo'),
+        );
+
+        $this->load->view('auth/cambia_password', $data);
+    }
+
+    public function salva_password()
+    {
+        $this->richiedi_login();
+
+        $this->form_validation->set_rules('password_attuale', 'Password attuale', 'required');
+        $this->form_validation->set_rules('password_nuova', 'Nuova password', 'required|min_length[6]');
+        $this->form_validation->set_rules('conferma_password_nuova', 'Conferma password', 'required|matches[password_nuova]');
+
+        if ($this->form_validation->run() === false)
+        {
+            $data = array(
+                'nome_utente' => $this->session->userdata('utente_nome'),
+                'email_utente' => $this->session->userdata('utente_email'),
+                'ruolo_utente' => $this->session->userdata('utente_ruolo'),
+            );
+
+            $this->load->view('auth/cambia_password', $data);
+            return;
+        }
+
+        $utente = $this->Utente_model->trova_per_id((int) $this->session->userdata('utente_id'));
+        if ( ! $utente || ! password_verify($this->input->post('password_attuale', true), $utente->password_hash))
+        {
+            $data = array(
+                'nome_utente' => $this->session->userdata('utente_nome'),
+                'email_utente' => $this->session->userdata('utente_email'),
+                'ruolo_utente' => $this->session->userdata('utente_ruolo'),
+                'errore' => 'La password attuale non è corretta.',
+            );
+
+            $this->load->view('auth/cambia_password', $data);
+            return;
+        }
+
+        $nuovo_hash = password_hash($this->input->post('password_nuova', true), PASSWORD_DEFAULT);
+        $this->Utente_model->aggiorna_password((int) $utente->id, $nuovo_hash);
+
+        $this->session->set_flashdata('notice_success', 'Password aggiornata correttamente.');
+        $this->redirect_post_login();
+    }
+
     public function logout()
     {
         $this->session->unset_userdata(array(

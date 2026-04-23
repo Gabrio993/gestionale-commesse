@@ -18,7 +18,7 @@
                 </div>
                 <div class="actions-inline">
                     <a class="btn secondary" href="<?= site_url('admin/utenti') ?>">Lista utenti</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
+                    <a class="btn secondary" href="<?= site_url('report/utenti') ?>">Report utenti</a>
                 </div>
             </div>
 

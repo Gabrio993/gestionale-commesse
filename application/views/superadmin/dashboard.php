@@ -11,6 +11,9 @@
 
     <div class="app-wrap">
         <div class="app-card">
+            <?php if ($this->session->flashdata('notice_success')): ?>
+                <div class="notice success"><?= html_escape($this->session->flashdata('notice_success')) ?></div>
+            <?php endif; ?>
             <div class="page-head">
                 <div>
                     <h1 class="page-title">Area superadmin</h1>
@@ -48,9 +51,9 @@
                     <div class="label">Report</div>
                     <div class="value">Riepiloghi</div>
                     <div class="actions-inline">
-                        <a class="btn primary" href="<?= site_url('reporti') ?>">Apri report</a>
-                        <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Per utenti</a>
-                        <a class="btn secondary" href="<?= site_url('reporti/commesse') ?>">Per commesse</a>
+                        <a class="btn primary" href="<?= site_url('report') ?>">Apri report</a>
+                        <a class="btn secondary" href="<?= site_url('report/utenti') ?>">Per utenti</a>
+                        <a class="btn secondary" href="<?= site_url('report/commesse') ?>">Per commesse</a>
                     </div>
                 </div>
             </div>

@@ -17,8 +17,8 @@
                     <p class="page-subtitle">Confronto ore tra utenti registrati, con filtro di periodo e facoltativo per commessa.</p>
                 </div>
                 <div class="actions-inline">
-                    <a class="btn secondary" href="<?= site_url('reporti') ?>">Report generale</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/commesse') ?>">Report commesse</a>
+                    <a class="btn secondary" href="<?= site_url('report') ?>">Report generale</a>
+                    <a class="btn secondary" href="<?= site_url('report/commesse') ?>">Report commesse</a>
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
             }
             ?>
 
-            <form method="get" action="<?= site_url('reporti/utenti') ?>" class="form-grid" style="margin-bottom:18px;">
+            <form method="get" action="<?= site_url('report/utenti') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
                     <div class="field">
                         <label>Dal</label>
@@ -66,8 +66,8 @@
                 </div>
                 <div class="actions-inline">
                     <button class="btn primary" type="submit">Applica filtro</button>
-                    <a class="btn secondary" href="<?= site_url('reporti/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Oggi</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= site_url('report/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('report/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Ultimi 30 giorni</a>
                 </div>
             </form>
 

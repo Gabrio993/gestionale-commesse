@@ -18,9 +18,16 @@
                 </div>
                 <div class="actions-inline">
                     <a class="btn secondary" href="<?= site_url('admin') ?>">Dashboard admin</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
+                    <a class="btn secondary" href="<?= site_url('report/utenti') ?>">Report utenti</a>
                 </div>
             </div>
+
+            <?php if ($this->session->flashdata('notice_success')): ?>
+                <div class="notice success"><?= html_escape($this->session->flashdata('notice_success')) ?></div>
+            <?php endif; ?>
+            <?php if ($this->session->flashdata('notice_error')): ?>
+                <div class="notice error"><?= html_escape($this->session->flashdata('notice_error')) ?></div>
+            <?php endif; ?>
 
             <!-- Lista utenti: da qui si entra nel dettaglio delle ore di ciascun account. -->
             <div class="table-wrap">
@@ -33,6 +40,8 @@
                             <th>Ruolo</th>
                             <th>Attivo</th>
                             <th>Ore</th>
+                            <th>Commesse</th>
+                            <th>Reset password</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,12 +52,18 @@
                                     <td><?= html_escape(trim($utente->nome . ' ' . $utente->cognome)) ?></td>
                                     <td><?= html_escape($utente->email) ?></td>
                                     <td><span class="badge"><?= html_escape($utente->ruolo) ?></span></td>
-                                    <td><?= (int) $utente->attivo ? 'Sì' : 'No' ?></td>
+                                    <td><?= (int) $utente->attivo ? 'Si' : 'No' ?></td>
                                     <td><a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) ?>">Apri</a></td>
+                                    <td><a class="btn secondary" href="<?= site_url('admin/assegna-commesse/' . (int) $utente->id) ?>">Assegna</a></td>
+                                    <td>
+                                        <form method="post" class="actions-inline" action="<?= site_url('admin/reset-password/' . (int) $utente->id) ?>" onsubmit="return confirm('Vuoi reimpostare la password di questo utente?');">
+                                            <button class="btn danger" type="submit">Reset</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6">Nessun utente trovato.</td></tr>
+                            <tr><td colspan="8">Nessun utente trovato.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

@@ -17,8 +17,8 @@
                     <p class="page-subtitle">Ore aggregate per commessa e cliente, con filtro di periodo.</p>
                 </div>
                 <div class="actions-inline">
-                    <a class="btn secondary" href="<?= site_url('reporti') ?>">Report generale</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
+                    <a class="btn secondary" href="<?= site_url('report') ?>">Report generale</a>
+                    <a class="btn secondary" href="<?= site_url('report/utenti') ?>">Report utenti</a>
                 </div>
             </div>
 
@@ -26,7 +26,7 @@
                 Periodo predefinito: ultimi 30 giorni. Puoi restringere il riepilogo con il calendario.
             </div>
 
-            <form method="get" action="<?= site_url('reporti/commesse') ?>" class="form-grid" style="margin-bottom:18px;">
+            <form method="get" action="<?= site_url('report/commesse') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
                     <div class="field">
                         <label>Dal</label>
@@ -39,8 +39,8 @@
                 </div>
                 <div class="actions-inline">
                     <button class="btn primary" type="submit">Applica filtro</button>
-                    <a class="btn secondary" href="<?= site_url('reporti/commesse?' . http_build_query(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
-                    <a class="btn secondary" href="<?= site_url('reporti/commesse?' . http_build_query(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= site_url('report/commesse?' . http_build_query(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('report/commesse?' . http_build_query(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
                 </div>
             </form>
 

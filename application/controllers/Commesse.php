@@ -18,8 +18,17 @@ class Commesse extends MY_Controller
     {
         $this->richiedi_login();
 
-        // Mostriamo sempre le commesse attive, così l'utente arriva subito al punto di inserimento ore.
-        $data['commesse'] = $this->Commessa_model->tutte(true);
+        // Gli utenti normali vedono solo le commesse assegnate; admin e superadmin possono vedere tutto.
+        $ruolo = $this->ruolo_utente();
+        if (in_array($ruolo, array('admin', 'superadmin'), true))
+        {
+            $data['commesse'] = $this->Commessa_model->tutte(true);
+        }
+        else
+        {
+            $data['commesse'] = $this->Commessa_model->commesse_assegnate_a_utente($this->session->userdata('utente_id'), true);
+        }
+
         $this->load->view('commesse/index', $data);
     }
 
@@ -37,8 +46,14 @@ class Commesse extends MY_Controller
         // Anche il dettaglio commessa deve poter essere letto per periodo, altrimenti lo storico diventa troppo rumoroso.
         $filtri = $this->leggi_filtri_periodo(false, true);
 
-        // Gli admin vedono tutte le ore, gli utenti normali solo le proprie.
+        // Gli admin vedono tutte le ore, gli utenti normali solo le proprie e solo sulle commesse assegnate.
         $ruolo = $this->ruolo_utente();
+        if ( ! in_array($ruolo, array('admin', 'superadmin'), true) && ! $this->Commessa_model->utente_ha_commessa($this->session->userdata('utente_id'), $id))
+        {
+            show_error('Questa commessa non è assegnata al tuo account.', 403);
+            return;
+        }
+
         $nav_active = trim((string) $this->input->get('nav', true));
         if (! in_array($nav_active, array('report_commesse', 'report_utenti', 'report', 'commesse', 'ore', 'dashboard'), true))
         {

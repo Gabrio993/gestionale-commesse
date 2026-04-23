@@ -160,7 +160,7 @@
     }
 
     .summary-card .label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-    .summary-card .value { font-size: 20px; font-weight: 600; }
+    .summary-card .value { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
 
     .section {
         margin-top: 18px;
@@ -197,7 +197,7 @@
     .actions-inline {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 10px;
     }
 
     .btn {
@@ -209,7 +209,6 @@
         border-radius: 12px;
         border: 1px solid transparent;
         text-decoration: none;
-        font-weight: 700;
         cursor: pointer;
     }
 

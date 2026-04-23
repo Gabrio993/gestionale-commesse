@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Reporti extends MY_Controller
+class Report extends MY_Controller
 {
     public function __construct()
     {
@@ -16,10 +16,23 @@ class Reporti extends MY_Controller
     {
         $this->richiedi_login();
 
-        // Il report principale è sempre personale, anche per admin e superadmin.
+        // Il report principale resta personale per tutti i ruoli.
         $filtri = $this->leggi_filtri_report(true, false);
-        $commesse = $this->Commessa_model->tutte_con_cliente();
         $utente_id = $this->session->userdata('utente_id');
+        $ruolo = $this->ruolo_utente();
+
+        if (in_array($ruolo, array('admin', 'superadmin'), true))
+        {
+            $commesse = $this->Commessa_model->tutte_con_cliente();
+        }
+        else
+        {
+            $commesse = $this->Commessa_model->commesse_assegnate_a_utente($utente_id, true);
+            if (! empty($filtri['commessa_id']) && ! $this->Commessa_model->utente_ha_commessa($utente_id, $filtri['commessa_id']))
+            {
+                $filtri['commessa_id'] = null;
+            }
+        }
 
         $filtro_query = array(
             'dal' => $filtri['dal'],
@@ -57,7 +70,7 @@ class Reporti extends MY_Controller
             )),
         );
 
-        $this->load->view('reporti/index', $data);
+        $this->load->view('report/index', $data);
     }
 
     public function utenti()
@@ -86,7 +99,7 @@ class Reporti extends MY_Controller
             'riepilogo_utenti' => $this->Registrazione_ore_model->riepilogo_ore_per_utente($filtri['dal'], $filtri['al'], $filtri['commessa_id']),
         );
 
-        $this->load->view('reporti/utenti', $data);
+        $this->load->view('report/utenti', $data);
     }
 
     public function commesse()
@@ -110,12 +123,11 @@ class Reporti extends MY_Controller
             'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_globale($filtri['dal'], $filtri['al']),
         );
 
-        $this->load->view('reporti/commesse', $data);
+        $this->load->view('report/commesse', $data);
     }
 
     private function leggi_filtri_report($default_today = false, $default_last_30_days = false)
     {
-        // I filtri usano GET così l'URL racconta sempre il report che si sta guardando.
         $dal = trim((string) $this->input->get('dal', true));
         $al = trim((string) $this->input->get('al', true));
         $commessa_id = trim((string) $this->input->get('commessa_id', true));

@@ -18,7 +18,7 @@
                 </div>
                 <div class="actions-inline">
                     <a class="btn secondary" href="<?= site_url('commesse') ?>">Vai alle commesse</a>
-                    <a class="btn secondary" href="<?= site_url('reporti') ?>">Report</a>
+                    <a class="btn secondary" href="<?= site_url('report') ?>">Report</a>
                 </div>
             </div>
 

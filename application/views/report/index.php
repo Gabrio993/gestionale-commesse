@@ -9,32 +9,73 @@
         .report-charts {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-            margin: 18px 0 8px;
+            gap: 14px;
+            margin: 14px 0 6px;
+            align-items: stretch;
         }
         .report-chart {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 18px;
+            padding: 12px;
+            width: 100%;
+            max-width: none;
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
         }
         .report-chart h2 {
-            margin: 0 0 8px 0;
-            font-size: 18px;
+            margin: 0 0 6px 0;
+            font-size: 16px;
         }
         .report-chart p {
-            margin: 0 0 14px 0;
+            margin: 0 0 10px 0;
             color: var(--muted);
+            font-size: 13px;
         }
         .report-chart-svg {
             width: 100%;
-            min-height: 300px;
+            min-height: 240px;
+            max-width: none;
+            margin: 0;
+            display: flex;
+            flex: 1 1 auto;
+        }
+        .donut-layout {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+            flex: 1 1 auto;
+        }
+        .donut-visual {
+            flex: 1 1 auto;
+            display: grid;
+            place-items: center;
+            min-height: 320px;
+        }
+        .donut-visual svg {
+            width: 260px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .donut-legend {
+            display: grid;
+            gap: 8px;
+            align-content: end;
+            justify-content: start;
+            align-self: flex-start;
+            margin-top: auto;
+            font-size: 12px;
+            color: var(--muted);
         }
         .report-legend {
             display: grid;
-            gap: 8px;
-            margin-top: 14px;
-            font-size: 13px;
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 12px;
             color: var(--muted);
         }
         .report-legend-item {
@@ -49,7 +90,7 @@
             flex: 0 0 12px;
         }
         .report-empty-chart {
-            min-height: 260px;
+            min-height: 240px;
             display: grid;
             place-items: center;
             color: var(--muted);
@@ -60,6 +101,12 @@
         @media (max-width: 900px) {
             .report-charts {
                 grid-template-columns: 1fr;
+            }
+            .donut-layout {
+                gap: 10px;
+            }
+            .donut-legend {
+                align-self: stretch;
             }
         }
     </style>
@@ -76,8 +123,8 @@
                 </div>
                 <?php if ($globale): ?>
                     <div class="actions-inline">
-                        <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Per utenti</a>
-                        <a class="btn secondary" href="<?= site_url('reporti/commesse') ?>">Per commesse</a>
+                        <a class="btn secondary" href="<?= site_url('report/utenti') ?>">Per utenti</a>
+                        <a class="btn secondary" href="<?= site_url('report/commesse') ?>">Per commesse</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -87,7 +134,7 @@
             </div>
 
             <!-- I filtri sono in GET per permettere di condividere l'URL del report. -->
-            <form method="get" action="<?= site_url('reporti') ?>" class="form-grid" style="margin-bottom:18px;">
+            <form method="get" action="<?= site_url('report') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
                     <div class="field">
                         <label>Dal</label>
@@ -111,8 +158,8 @@
                 </div>
                 <div class="actions-inline">
                     <button class="btn primary" type="submit">Applica filtro</button>
-                    <a class="btn secondary" href="<?= site_url('reporti') ?>">Oggi</a>
-                    <a class="btn secondary" href="<?= site_url('reporti?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d')) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= site_url('report') ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('report?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d')) ?>">Ultimi 30 giorni</a>
                 </div>
             </form>
 
@@ -310,8 +357,8 @@
                 const total = values.reduce((sum, value) => sum + Number(value || 0), 0);
                 const size = 320;
                 const center = size / 2;
-                const radius = 92;
-                const stroke = 30;
+                const radius = 150;
+                const stroke = 18;
                 const circumference = 2 * Math.PI * radius;
 
                 if (!total) {
@@ -329,8 +376,8 @@
                 }).join('');
 
                 const centerText = `
-                    <text x="${center}" y="${center - 6}" text-anchor="middle" font-size="20" font-weight="700" fill="#111827">${fmtHours(total)}</text>
-                    <text x="${center}" y="${center + 18}" text-anchor="middle" font-size="11" fill="#6b7280">Ore totali</text>
+                    <text x="${center}" y="${center - 8}" text-anchor="middle" font-size="28" font-weight="700" fill="#111827">${fmtHours(total)}</text>
+                    <text x="${center}" y="${center + 20}" text-anchor="middle" font-size="16" font-weight="600" fill="#6b7280">Ore totali</text>
                 `;
 
                 const legend = labels.map((label, index) => {
@@ -344,11 +391,15 @@
                 }).join('');
 
                 return `
-                    <svg viewBox="0 0 ${size} ${size}" role="img" aria-hidden="true">
-                        ${segments}
-                        ${centerText}
-                    </svg>
-                    <div class="report-legend">${legend}</div>
+                    <div class="donut-layout">
+                        <div class="donut-visual">
+                            <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-hidden="true">
+                                ${segments}
+                                ${centerText}
+                            </svg>
+                        </div>
+                        <div class="donut-legend report-legend">${legend}</div>
+                    </div>
                 `;
             }
 
@@ -361,13 +412,13 @@
                     return '<div class="report-empty-chart">Nessun dato disponibile.</div>';
                 }
 
-                const width = 520;
-                const height = 300;
-                const padding = { top: 20, right: 16, bottom: 56, left: 38 };
+                const width = 320;
+                const height = 180;
+                const padding = { top: 10, right: 10, bottom: 30, left: 18 };
                 const chartWidth = width - padding.left - padding.right;
                 const chartHeight = height - padding.top - padding.bottom;
-                const gap = 10;
-                const barWidth = Math.max(18, (chartWidth - (gap * (values.length - 1))) / values.length);
+                const gap = 6;
+                const barWidth = Math.max(10, (chartWidth - (gap * (values.length - 1))) / values.length);
                 const scale = chartHeight / max;
 
                 const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (fraction) {
@@ -382,10 +433,10 @@
                     const label = labels[index];
                     return `
                         <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="8" fill="#111827"></rect>
-                        <text x="${x + (barWidth / 2)}" y="${padding.top + chartHeight + 18}" text-anchor="middle" font-size="10" fill="#6b7280">
+                        <text x="${x + (barWidth / 2)}" y="${padding.top + chartHeight + 13}" text-anchor="middle" font-size="8" fill="#6b7280">
                             ${escapeHtml(label)}
                         </text>
-                        <text x="${x + (barWidth / 2)}" y="${y - 6}" text-anchor="middle" font-size="10" font-weight="700" fill="#111827">
+                        <text x="${x + (barWidth / 2)}" y="${y - 3}" text-anchor="middle" font-size="8" font-weight="700" fill="#111827">
                             ${fmtHours(value)}
                         </text>
                     `;

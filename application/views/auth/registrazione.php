@@ -4,49 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f4f6f8; color: #1f2937; }
-        .card { width: min(92vw, 460px); background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
-        label { display: block; margin: 14px 0 6px; font-weight: 700; }
-        input { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; }
-        button, .link { display: inline-block; margin-top: 16px; padding: 12px 16px; border-radius: 10px; border: 0; text-decoration: none; font-weight: 700; cursor: pointer; }
-        button { background: #111827; color: #fff; }
-        .link { background: #e5e7eb; color: #111827; }
-        .msg { margin: 12px 0 0; color: #065f46; }
-        .err { margin: 12px 0 0; color: #b91c1c; }
-    </style>
+    <?php $this->load->view('partials/auth_ui'); ?>
 </head>
-<body>
+<body class="auth-page">
     <!-- Registrazione pubblica: crea un nuovo utente con ruolo base. -->
-    <div class="card">
-        <h1>Registrazione</h1>
-        <p>Crea il tuo account interno.</p>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <img class="auth-logo" src="<?= base_url('assets/images/auth-bg.png') ?>" alt="Logo">
+                <div>
+                    <strong>Gestionale ore</strong>
+                    <span>Crea un nuovo account interno</span>
+                </div>
+            </div>
 
-        <?php if (isset($errore)): ?>
-            <div class="err"><?= html_escape($errore) ?></div>
-        <?php endif; ?>
+            <h1 class="auth-title">Registrazione</h1>
+            <p class="auth-text">Crea il tuo account interno.</p>
 
-        <?= validation_errors('<div class="err">', '</div>') ?>
+            <?php if (isset($errore)): ?>
+                <div class="auth-err"><?= html_escape($errore) ?></div>
+            <?php endif; ?>
 
-        <form method="post" action="<?= site_url('auth/salva_registrazione') ?>">
-            <label>Nome</label>
-            <input type="text" name="nome" value="<?= set_value('nome') ?>" required>
+            <?= validation_errors('<div class="auth-err">', '</div>') ?>
 
-            <label>Cognome</label>
-            <input type="text" name="cognome" value="<?= set_value('cognome') ?>" required>
+            <form method="post" action="<?= site_url('auth/salva_registrazione') ?>" class="auth-grid">
+                <div class="auth-field">
+                    <label>Nome</label>
+                    <input type="text" name="nome" value="<?= set_value('nome') ?>" required>
+                </div>
 
-            <label>Email</label>
-            <input type="email" name="email" value="<?= set_value('email') ?>" required>
+                <div class="auth-field">
+                    <label>Cognome</label>
+                    <input type="text" name="cognome" value="<?= set_value('cognome') ?>" required>
+                </div>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+                <div class="auth-field">
+                    <label>Email</label>
+                    <input type="email" name="email" value="<?= set_value('email') ?>" required>
+                </div>
 
-            <label>Conferma password</label>
-            <input type="password" name="conferma_password" required>
+                <div class="auth-field">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
 
-            <button type="submit">Registrati</button>
-            <a class="link" href="<?= site_url('auth/login') ?>">Ho già un account</a>
-        </form>
+                <div class="auth-field">
+                    <label>Conferma password</label>
+                    <input type="password" name="conferma_password" required>
+                </div>
+
+                <div class="auth-actions">
+                    <button class="auth-button primary" type="submit">Registrati</button>
+                    <a class="auth-link secondary" href="<?= site_url('auth/login') ?>">Ho già un account</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

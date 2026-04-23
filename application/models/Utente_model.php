@@ -46,4 +46,11 @@ class Utente_model extends MY_Model
             ->where('id', (int) $utente_id)
             ->update($this->table, array('ruolo' => $ruolo));
     }
+
+    public function aggiorna_password($utente_id, $password_hash)
+    {
+        return $this->db
+            ->where('id', (int) $utente_id)
+            ->update($this->table, array('password_hash' => $password_hash));
+    }
 }

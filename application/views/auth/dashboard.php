@@ -11,6 +11,9 @@
 
     <div class="app-wrap">
         <div class="app-card">
+            <?php if ($this->session->flashdata('notice_success')): ?>
+                <div class="notice success"><?= html_escape($this->session->flashdata('notice_success')) ?></div>
+            <?php endif; ?>
             <div class="page-head">
                 <div>
                     <h1 class="page-title">Benvenuto, <?= html_escape($nome_utente ?? '') ?></h1>
@@ -42,7 +45,15 @@
                     <div class="value">Base</div>
                     <p class="page-subtitle">Riepilogo ore, commesse e ultimi inserimenti.</p>
                     <div class="actions-inline">
-                        <a class="btn primary" href="<?= site_url('reporti') ?>">Apri report</a>
+                        <a class="btn primary" href="<?= site_url('report') ?>">Apri report</a>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Password</div>
+                    <div class="value">Sicurezza</div>
+                    <p class="page-subtitle">Aggiorna la tua password quando vuoi.</p>
+                    <div class="actions-inline">
+                        <a class="btn primary" href="<?= site_url('auth/cambia-password') ?>">Cambia password</a>
                     </div>
                 </div>
             </div>

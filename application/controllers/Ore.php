@@ -43,6 +43,13 @@ class Ore extends MY_Controller
             return;
         }
 
+        // Gli utenti normali possono inserire ore solo sulle commesse assegnate.
+        if ( ! in_array($this->ruolo_utente(), array('admin', 'superadmin'), true) && ! $this->Commessa_model->utente_ha_commessa($this->session->userdata('utente_id'), $commessa_id))
+        {
+            show_error('Questa commessa non è assegnata al tuo account.', 403);
+            return;
+        }
+
         $data['commessa'] = $commessa;
         $this->load->view('ore/nuova', $data);
     }
@@ -73,6 +80,12 @@ class Ore extends MY_Controller
         if ( ! $commessa)
         {
             show_404();
+            return;
+        }
+
+        if ( ! in_array($this->ruolo_utente(), array('admin', 'superadmin'), true) && ! $this->Commessa_model->utente_ha_commessa($this->session->userdata('utente_id'), $commessa_id))
+        {
+            show_error('Questa commessa non è assegnata al tuo account.', 403);
             return;
         }
 

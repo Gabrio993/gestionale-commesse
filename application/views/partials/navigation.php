@@ -15,6 +15,7 @@ if (! empty($nav_active) && is_string($nav_active)) {
         'commesse',
         'ore',
         'report',
+        'password',
         'report_utenti',
         'report_commesse',
         'clienti',
@@ -32,7 +33,7 @@ if (! $has_forced_nav) {
         $active_item = 'commesse';
     } elseif ($current_class === 'ore') {
         $active_item = 'ore';
-    } elseif ($current_class === 'reporti') {
+    } elseif ($current_class === 'report') {
         if ($current_method === 'utenti') {
             $active_item = 'report_utenti';
         } elseif ($current_method === 'commesse') {
@@ -46,6 +47,8 @@ if (! $has_forced_nav) {
         $active_item = ($current_method === 'utenti') ? 'utenti' : 'dashboard';
     } elseif ($current_class === 'superadmin') {
         $active_item = ($current_method === 'utenti') ? 'ruoli' : 'dashboard';
+    } elseif ($current_class === 'auth' && $current_method === 'cambia_password') {
+        $active_item = 'password';
     }
 }
 
@@ -64,13 +67,14 @@ $nav_class = function ($item) use ($active_item) {
             <a class="<?= $nav_class('dashboard') ?>" href="<?= site_url('dashboard') ?>">Dashboard</a>
             <a class="<?= $nav_class('commesse') ?>" href="<?= site_url('commesse') ?>">Commesse</a>
             <a class="<?= $nav_class('ore') ?>" href="<?= site_url('ore/mie') ?>">Le mie ore</a>
-            <a class="<?= $nav_class('report') ?>" href="<?= site_url('reporti') ?>">Report</a>
+            <a class="<?= $nav_class('report') ?>" href="<?= site_url('report') ?>">Report</a>
+            <a class="<?= $nav_class('password') ?>" href="<?= site_url('auth/cambia-password') ?>">Password</a>
 
             <?php if (in_array($ruolo, array('admin', 'superadmin'), true)): ?>
                 <a class="<?= $nav_class('clienti') ?>" href="<?= site_url('clienti') ?>">Clienti</a>
                 <a class="<?= $nav_class('utenti') ?>" href="<?= site_url('admin/utenti') ?>">Utenti</a>
-                <a class="<?= $nav_class('report_utenti') ?>" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
-                <a class="<?= $nav_class('report_commesse') ?>" href="<?= site_url('reporti/commesse') ?>">Report commesse</a>
+                <a class="<?= $nav_class('report_utenti') ?>" href="<?= site_url('report/utenti') ?>">Report utenti</a>
+                <a class="<?= $nav_class('report_commesse') ?>" href="<?= site_url('report/commesse') ?>">Report commesse</a>
             <?php endif; ?>
 
             <?php if ($ruolo === 'superadmin'): ?>
