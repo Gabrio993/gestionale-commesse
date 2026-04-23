@@ -1,3 +1,4 @@
+<link rel="icon" type="image/png" href="<?= base_url('assets/images/auth-bg.png') ?>">
 <style>
     body.auth-page {
         font-family: Arial, sans-serif;
@@ -29,12 +30,61 @@
         padding: 32px 20px;
     }
 
+    @keyframes authSlideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-400px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes authSlideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(1000px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .auth-corner-brand {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        
+    }
+
+    .auth-landing .auth-corner-brand {
+        animation: authSlideInLeft 2s ease-out both;
+    }
+
+    .auth-landing .auth-card {
+        animation: authSlideInRight 2s ease-out both;
+    }
+
+    .auth-corner-brand strong {
+        display: block;
+        font-size: 18px;
+        line-height: 1.1;
+    }
+
+
     .auth-card {
         width: min(92vw, 520px);
         background: rgba(255, 255, 255, 0.94);
         border: 1px solid rgba(229, 231, 235, 0.85);
         border-radius: 24px;
-        padding: 30px;
+        padding: 40px;
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
         backdrop-filter: blur(14px);
     }
@@ -141,6 +191,32 @@
     }
 
     @media (max-width: 560px) {
+        .auth-landing .auth-corner-brand,
+        .auth-landing .auth-card {
+            animation-duration: 0.01ms;
+            animation-delay: 0s;
+        }
+
+        .auth-corner-brand {
+            top: 14px;
+            left: 14px;
+            padding: 8px 10px;
+            gap: 8px;
+        }
+
+        .auth-corner-logo {
+            width: 38px;
+            height: 38px;
+        }
+
+        .auth-corner-brand strong {
+            font-size: 15px;
+        }
+
+        .auth-corner-brand span {
+            font-size: 11px;
+        }
+
         .auth-card {
             width: 100%;
             padding: 22px;

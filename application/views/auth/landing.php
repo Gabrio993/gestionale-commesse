@@ -6,8 +6,11 @@
     <title>Gestionale ore</title>
     <?php $this->load->view('partials/auth_ui'); ?>
 </head>
-<body class="auth-page">
+<body class="auth-page auth-landing">
     <!-- Landing iniziale: il visitatore sceglie se accedere o registrarsi. -->
+    <div class="auth-corner-brand">
+        <img class="auth-corner-logo" src="<?= base_url('assets/images/logo-auth.png') ?>" alt="Bell Production">
+    </div>
     <div class="auth-shell">
         <div class="auth-card">
             <div class="auth-brand">

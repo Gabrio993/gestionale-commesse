@@ -8,6 +8,13 @@
 </head>
 <body class="auth-page">
     <!-- Cambio password self-service: l'utente aggiorna la propria password dopo un reset o quando vuole. -->
+    <div class="auth-corner-brand">
+        <img class="auth-corner-logo" src="<?= base_url('assets/images/logo-auth.png') ?>" alt="Bell Production">
+        <div>
+            <strong>Bell Production</strong>
+            <span>Gestionale ore</span>
+        </div>
+    </div>
     <div class="auth-shell">
         <div class="auth-card">
             <div class="auth-brand">

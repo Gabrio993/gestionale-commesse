@@ -28,7 +28,7 @@
     .app-wrap {
         width: min(calc(100vw - 40px), 1600px);
         margin: 0 auto;
-        padding: 24px 0 40px;
+        padding: 50px 0 40px;
     }
     .app-card {
         background: var(--surface);
@@ -106,9 +106,14 @@
         color: white;
         border-color: var(--accent);
     }
-
+   
     .nav-links a.secondary {
         background: #fff;
+    }
+    .nav-links a.secondary:hover {
+         background: var(--accent);
+        color: white;
+        border-color: var(--accent);
     }
 
     .user-chip {
@@ -147,7 +152,7 @@
 
     .summary-grid {
         display: grid;
-        gap: 14px;
+        gap: 16px;
         grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         margin: 18px 0 24px;
     }
@@ -213,7 +218,9 @@
     }
 
     .btn.primary { background: var(--accent); color: #fff; }
+    .btn.primary:hover { background: var(--bg); color: var(--accent); border: 1px solid var(--accent); }
     .btn.secondary { background: #fff; color: var(--text); border-color: var(--border); }
+    .btn.secondary:hover { background: var(--accent); color: #fff; }
     .btn.danger { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
 
     .form-grid {

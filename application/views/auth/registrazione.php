@@ -8,6 +8,9 @@
 </head>
 <body class="auth-page">
     <!-- Registrazione pubblica: crea un nuovo utente con ruolo base. -->
+    <div class="auth-corner-brand">
+        <img class="auth-corner-logo" src="<?= base_url('assets/images/logo-auth.png') ?>" alt="Bell Production">
+    </div>
     <div class="auth-shell">
         <div class="auth-card">
             <div class="auth-brand">

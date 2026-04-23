@@ -8,6 +8,9 @@
 </head>
 <body class="auth-page">
     <!-- Form di login: dopo l'autenticazione il controller decide la dashboard corretta in base al ruolo. -->
+    <div class="auth-corner-brand">
+        <img class="auth-corner-logo" src="<?= base_url('assets/images/logo-auth.png') ?>" alt="Bell Production">
+    </div>
     <div class="auth-shell">
         <div class="auth-card">
             <div class="auth-brand">
