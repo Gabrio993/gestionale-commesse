@@ -22,19 +22,79 @@
                 </div>
             </div>
 
+            <div class="notice">
+                <?= ! empty($commessa_filtrata) ? 'Stai guardando il periodo selezionato sulla commessa: ' . html_escape(($commessa_filtrata->codice ? $commessa_filtrata->codice . ' - ' : '') . $commessa_filtrata->attivita) : 'Periodo predefinito: ultimi 30 giorni. Puoi cambiare intervallo o restringere il dettaglio a una commessa.' ?>
+            </div>
+
+            <?php
+            $query_base = array();
+            if (! empty($filtri['dal']))
+            {
+                $query_base['dal'] = $filtri['dal'];
+            }
+            if (! empty($filtri['al']))
+            {
+                $query_base['al'] = $filtri['al'];
+            }
+            if (! empty($commessa_id))
+            {
+                $query_base['commessa_id'] = $commessa_id;
+            }
+            if (! empty($nav_active))
+            {
+                $query_base['nav'] = $nav_active;
+            }
+            ?>
+
+            <form method="get" action="<?= site_url('ore/utente/' . (int) $utente->id) ?>" class="form-grid" style="margin-bottom:18px;">
+                <?php if (! empty($nav_active)): ?>
+                    <input type="hidden" name="nav" value="<?= html_escape($nav_active) ?>">
+                <?php endif; ?>
+                <div class="summary-grid" style="margin:0;">
+                    <div class="field">
+                        <label>Dal</label>
+                        <input type="date" name="dal" value="<?= html_escape($filtri['dal'] ?? '') ?>">
+                    </div>
+                    <div class="field">
+                        <label>Al</label>
+                        <input type="date" name="al" value="<?= html_escape($filtri['al'] ?? '') ?>">
+                    </div>
+                    <div class="field">
+                        <label>Commessa</label>
+                        <select name="commessa_id">
+                            <option value="">Tutte le commesse</option>
+                            <?php foreach ($commesse as $commessa): ?>
+                                <option value="<?= (int) $commessa->id ?>" <?= ! empty($commessa_id) && (int) $commessa_id === (int) $commessa->id ? 'selected' : '' ?>>
+                                    <?= html_escape(($commessa->codice ? $commessa->codice . ' - ' : '') . $commessa->attivita) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="actions-inline">
+                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) . '?' . http_build_query(array_filter(array_merge(array('nav' => $nav_active ?: 'report_utenti', 'dal' => date('Y-m-d'), 'al' => date('Y-m-d')), ! empty($commessa_id) ? array('commessa_id' => $commessa_id) : array()))) ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) . '?' . http_build_query(array_filter(array_merge(array('nav' => $nav_active ?: 'report_utenti', 'dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')), ! empty($commessa_id) ? array('commessa_id' => $commessa_id) : array()))) ?>">Ultimi 30 giorni</a>
+                </div>
+            </form>
+
             <!-- Scheda di sintesi utile per admin e superadmin. -->
             <div class="summary-grid">
                 <div class="summary-card">
-                    <div class="label">Totale ore</div>
+                    <div class="label">Totale periodo</div>
                     <div class="value"><?= number_format((float) $totale_ore, 2, ',', '.') ?></div>
                 </div>
                 <div class="summary-card">
-                    <div class="label">Questo mese</div>
+                    <div class="label">Mese corrente</div>
                     <div class="value"><?= number_format((float) $totale_ore_mese, 2, ',', '.') ?></div>
                 </div>
                 <div class="summary-card">
                     <div class="label">Commesse toccate</div>
                     <div class="value"><?= is_array($riepilogo_commesse) ? count($riepilogo_commesse) : 0 ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Registrazioni</div>
+                    <div class="value"><?= is_array($ore) ? count($ore) : 0 ?></div>
                 </div>
             </div>
 

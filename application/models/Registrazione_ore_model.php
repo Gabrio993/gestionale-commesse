@@ -48,13 +48,17 @@ class Registrazione_ore_model extends MY_Model
             ->delete($this->table);
     }
 
-    public function per_utente($utente_id, $dal = null, $al = null, $limite = null)
+    public function per_utente($utente_id, $dal = null, $al = null, $limite = null, $commessa_id = null)
     {
         // Qui portiamo dentro anche commessa e cliente: serve per mostrare righe leggibili in UI.
         $this->db->select('registrazioni_ore.*, commesse.codice as commessa_codice, commesse.attivita as commessa_attivita, commesse.nome as commessa_nome, clienti.ragione_sociale as cliente_ragione_sociale');
         $this->db->join('commesse', 'commesse.id = registrazioni_ore.commessa_id', 'left');
         $this->db->join('clienti', 'clienti.id = commesse.cliente_id', 'left');
         $this->db->where('registrazioni_ore.utente_id', (int) $utente_id);
+        if (! empty($commessa_id))
+        {
+            $this->db->where('registrazioni_ore.commessa_id', (int) $commessa_id);
+        }
         $this->applichi_filtri_data($dal, $al);
 
         $query = $this->db
@@ -117,9 +121,13 @@ class Registrazione_ore_model extends MY_Model
     }
 
     // I totali sono usati nelle card dei riepiloghi e nei report.
-    public function totale_ore_utente($utente_id, $dal = null, $al = null)
+    public function totale_ore_utente($utente_id, $dal = null, $al = null, $commessa_id = null)
     {
         $this->applichi_filtri_data($dal, $al);
+        if (! empty($commessa_id))
+        {
+            $this->db->where('commessa_id', (int) $commessa_id);
+        }
         $row = $this->db
             ->select_sum('ore', 'totale_ore')
             ->where('utente_id', (int) $utente_id)
@@ -220,12 +228,39 @@ class Registrazione_ore_model extends MY_Model
             ->result();
     }
 
-    public function ultime_registrazioni_utente($utente_id, $limite = 10, $dal = null, $al = null)
+    // Questo riepilogo serve al grafico a barre: somma le ore giorno per giorno nel periodo filtrato.
+    public function riepilogo_ore_per_giorno($dal = null, $al = null, $utente_id = null, $commessa_id = null)
+    {
+        $this->applichi_filtri_data($dal, $al);
+
+        if (! empty($utente_id))
+        {
+            $this->db->where('registrazioni_ore.utente_id', (int) $utente_id);
+        }
+
+        if (! empty($commessa_id))
+        {
+            $this->db->where('registrazioni_ore.commessa_id', (int) $commessa_id);
+        }
+
+        return $this->db
+            ->select('registrazioni_ore.data_lavoro, SUM(registrazioni_ore.ore) as totale_ore', false)
+            ->group_by('registrazioni_ore.data_lavoro')
+            ->order_by('registrazioni_ore.data_lavoro', 'ASC')
+            ->get($this->table)
+            ->result();
+    }
+
+    public function ultime_registrazioni_utente($utente_id, $limite = 10, $dal = null, $al = null, $commessa_id = null)
     {
         $this->db->select('registrazioni_ore.*, commesse.codice as commessa_codice, commesse.attivita as commessa_attivita, commesse.nome as commessa_nome, clienti.ragione_sociale as cliente_ragione_sociale');
         $this->db->join('commesse', 'commesse.id = registrazioni_ore.commessa_id', 'left');
         $this->db->join('clienti', 'clienti.id = commesse.cliente_id', 'left');
         $this->db->where('registrazioni_ore.utente_id', (int) $utente_id);
+        if (! empty($commessa_id))
+        {
+            $this->db->where('registrazioni_ore.commessa_id', (int) $commessa_id);
+        }
         $this->applichi_filtri_data($dal, $al);
 
         return $this->db

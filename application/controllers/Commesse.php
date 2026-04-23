@@ -34,17 +34,29 @@ class Commesse extends MY_Controller
             return;
         }
 
+        // Anche il dettaglio commessa deve poter essere letto per periodo, altrimenti lo storico diventa troppo rumoroso.
+        $filtri = $this->leggi_filtri_periodo(false, true);
+
         // Gli admin vedono tutte le ore, gli utenti normali solo le proprie.
         $ruolo = $this->ruolo_utente();
+        $nav_active = trim((string) $this->input->get('nav', true));
+        if (! in_array($nav_active, array('report_commesse', 'report_utenti', 'report', 'commesse', 'ore', 'dashboard'), true))
+        {
+            $nav_active = null;
+        }
         $ore_commessa = in_array($ruolo, array('admin', 'superadmin'), true)
-            ? $this->Registrazione_ore_model->per_commessa($id)
-            : $this->Registrazione_ore_model->per_commessa_e_utente($id, $this->session->userdata('utente_id'));
+            ? $this->Registrazione_ore_model->per_commessa($id, $filtri['dal'], $filtri['al'])
+            : $this->Registrazione_ore_model->per_commessa_e_utente($id, $this->session->userdata('utente_id'), $filtri['dal'], $filtri['al']);
 
         $data = array(
             'commessa' => $commessa,
             'ore_commessa' => $ore_commessa,
+            'filtri' => $filtri,
+            'totale_ore' => $this->Registrazione_ore_model->totale_ore_globali($filtri['dal'], $filtri['al'], $id),
+            'totale_registrazioni' => count($ore_commessa),
             'puo_modificare' => true,
             'ruolo_utente' => $ruolo,
+            'nav_active' => $nav_active,
         );
 
         $this->load->view('commesse/dettaglio', $data);
@@ -94,5 +106,30 @@ class Commesse extends MY_Controller
         ));
 
         redirect('commesse');
+    }
+
+    private function leggi_filtri_periodo($default_today = false, $default_last_30_days = false)
+    {
+        $dal = trim((string) $this->input->get('dal', true));
+        $al = trim((string) $this->input->get('al', true));
+
+        if ($dal === '' && $al === '')
+        {
+            if ($default_today)
+            {
+                $dal = date('Y-m-d');
+                $al = date('Y-m-d');
+            }
+            elseif ($default_last_30_days)
+            {
+                $al = date('Y-m-d');
+                $dal = date('Y-m-d', strtotime('-30 days'));
+            }
+        }
+
+        return array(
+            'dal' => $dal ?: null,
+            'al' => $al ?: null,
+        );
     }
 }

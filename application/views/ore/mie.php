@@ -23,7 +23,7 @@
             </div>
 
             <div class="notice">
-                Periodo predefinito: ultimi 30 giorni. Puoi cambiare intervallo e ripulire il filtro.
+                Periodo predefinito: oggi. Puoi cambiare intervallo, tornare a oggi o aprire gli ultimi 30 giorni.
             </div>
 
             <form method="get" action="<?= site_url('ore/mie') ?>" class="form-grid" style="margin-bottom:18px;">
@@ -39,7 +39,8 @@
                 </div>
                 <div class="actions-inline">
                     <button class="btn primary" type="submit">Applica filtro</button>
-                    <a class="btn secondary" href="<?= site_url('ore/mie') ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= site_url('ore/mie') ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('ore/mie?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d')) ?>">Ultimi 30 giorni</a>
                 </div>
             </form>
 

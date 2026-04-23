@@ -14,10 +14,52 @@
             <div class="page-head">
                 <div>
                     <h1 class="page-title">Report commesse</h1>
-                    <p class="page-subtitle">Ore aggregate per commessa e cliente.</p>
+                    <p class="page-subtitle">Ore aggregate per commessa e cliente, con filtro di periodo.</p>
                 </div>
                 <div class="actions-inline">
                     <a class="btn secondary" href="<?= site_url('reporti') ?>">Report generale</a>
+                    <a class="btn secondary" href="<?= site_url('reporti/utenti') ?>">Report utenti</a>
+                </div>
+            </div>
+
+            <div class="notice">
+                Periodo predefinito: ultimi 30 giorni. Puoi restringere il riepilogo con il calendario.
+            </div>
+
+            <form method="get" action="<?= site_url('reporti/commesse') ?>" class="form-grid" style="margin-bottom:18px;">
+                <div class="summary-grid" style="margin:0;">
+                    <div class="field">
+                        <label>Dal</label>
+                        <input type="date" name="dal" value="<?= html_escape($filtri['dal'] ?? '') ?>">
+                    </div>
+                    <div class="field">
+                        <label>Al</label>
+                        <input type="date" name="al" value="<?= html_escape($filtri['al'] ?? '') ?>">
+                    </div>
+                </div>
+                <div class="actions-inline">
+                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <a class="btn secondary" href="<?= site_url('reporti/commesse?' . http_build_query(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('reporti/commesse?' . http_build_query(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
+                </div>
+            </form>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="label">Totale ore filtrate</div>
+                    <div class="value"><?= number_format((float) $totale_ore, 2, ',', '.') ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Commesse presenti</div>
+                    <div class="value"><?= (int) count($riepilogo_commesse) ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Dal</div>
+                    <div class="value"><?= html_escape($filtri['dal'] ?? 'n.d.') ?></div>
+                </div>
+                <div class="summary-card">
+                    <div class="label">Al</div>
+                    <div class="value"><?= html_escape($filtri['al'] ?? 'n.d.') ?></div>
                 </div>
             </div>
 
@@ -41,7 +83,9 @@
                                     <td><?= html_escape($riga->attivita) ?></td>
                                     <td><?= html_escape($riga->cliente_ragione_sociale) ?></td>
                                     <td><strong><?= number_format((float) $riga->totale_ore, 2, ',', '.') ?></strong></td>
-                                    <td><a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $riga->id) ?>">Apri</a></td>
+                                    <td>
+                                        <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $riga->id) . '?' . http_build_query(array('nav' => 'report_commesse', 'dal' => $filtri['dal'] ?? null, 'al' => $filtri['al'] ?? null)) ?>">Apri</a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

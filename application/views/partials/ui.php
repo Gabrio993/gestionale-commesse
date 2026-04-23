@@ -25,7 +25,11 @@
         color: var(--text);
     }
 
-    .app-wrap { max-width: 1320px; margin: 0 auto; padding: 24px 20px 40px; }
+    .app-wrap {
+        width: min(calc(100vw - 40px), 1600px);
+        margin: 0 auto;
+        padding: 24px 0 40px;
+    }
     .app-card {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -56,9 +60,9 @@
     }
 
     .app-topbar-inner {
-        max-width: 1320px;
+        width: min(calc(100vw - 40px), 1600px);
         margin: 0 auto;
-        padding: 16px 20px;
+        padding: 16px 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -256,7 +260,7 @@
     }
 
     @media (max-width: 760px) {
-        .app-wrap { padding: 16px 12px 30px; }
+        .app-wrap { width: min(calc(100vw - 24px), 1600px); padding: 16px 0 30px; }
         .app-card { padding: 18px; }
         .page-title { font-size: 24px; }
         .nav-links { width: 100%; }

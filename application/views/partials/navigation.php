@@ -8,24 +8,45 @@ $current_class = strtolower($this->router->fetch_class());
 $current_method = strtolower($this->router->fetch_method());
 
 $active_item = 'dashboard';
-if ($current_class === 'commesse') {
-    $active_item = 'commesse';
-} elseif ($current_class === 'ore') {
-    $active_item = 'ore';
-} elseif ($current_class === 'reporti') {
-    if ($current_method === 'utenti') {
-        $active_item = 'report_utenti';
-    } elseif ($current_method === 'commesse') {
-        $active_item = 'report_commesse';
-    } else {
-        $active_item = 'report';
+$has_forced_nav = false;
+if (! empty($nav_active) && is_string($nav_active)) {
+    $allowed_nav_items = array(
+        'dashboard',
+        'commesse',
+        'ore',
+        'report',
+        'report_utenti',
+        'report_commesse',
+        'clienti',
+        'utenti',
+        'ruoli',
+    );
+    if (in_array($nav_active, $allowed_nav_items, true)) {
+        $active_item = $nav_active;
+        $has_forced_nav = true;
     }
-} elseif ($current_class === 'clienti') {
-    $active_item = 'clienti';
-} elseif ($current_class === 'admin') {
-    $active_item = ($current_method === 'utenti') ? 'utenti' : 'dashboard';
-} elseif ($current_class === 'superadmin') {
-    $active_item = ($current_method === 'utenti') ? 'ruoli' : 'dashboard';
+}
+
+if (! $has_forced_nav) {
+    if ($current_class === 'commesse') {
+        $active_item = 'commesse';
+    } elseif ($current_class === 'ore') {
+        $active_item = 'ore';
+    } elseif ($current_class === 'reporti') {
+        if ($current_method === 'utenti') {
+            $active_item = 'report_utenti';
+        } elseif ($current_method === 'commesse') {
+            $active_item = 'report_commesse';
+        } else {
+            $active_item = 'report';
+        }
+    } elseif ($current_class === 'clienti') {
+        $active_item = 'clienti';
+    } elseif ($current_class === 'admin') {
+        $active_item = ($current_method === 'utenti') ? 'utenti' : 'dashboard';
+    } elseif ($current_class === 'superadmin') {
+        $active_item = ($current_method === 'utenti') ? 'ruoli' : 'dashboard';
+    }
 }
 
 $nav_class = function ($item) use ($active_item) {

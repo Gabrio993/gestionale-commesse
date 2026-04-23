@@ -28,6 +28,31 @@
                 </div>
             </div>
 
+            <div class="notice">
+                <?= ! empty($filtri['dal']) || ! empty($filtri['al']) ? 'Hai applicato un filtro di periodo al dettaglio della commessa.' : 'Periodo predefinito: ultimi 30 giorni. Puoi filtrare lo storico con calendario.' ?>
+            </div>
+
+            <form method="get" action="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) ?>" class="form-grid" style="margin-bottom:18px;">
+                <?php if (! empty($nav_active)): ?>
+                    <input type="hidden" name="nav" value="<?= html_escape($nav_active) ?>">
+                <?php endif; ?>
+                <div class="summary-grid" style="margin:0;">
+                    <div class="field">
+                        <label>Dal</label>
+                        <input type="date" name="dal" value="<?= html_escape($filtri['dal'] ?? '') ?>">
+                    </div>
+                    <div class="field">
+                        <label>Al</label>
+                        <input type="date" name="al" value="<?= html_escape($filtri['al'] ?? '') ?>">
+                    </div>
+                </div>
+                <div class="actions-inline">
+                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) . '?' . http_build_query(array_filter(array('nav' => $nav_active ?: 'report_commesse', 'dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
+                    <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) . '?' . http_build_query(array_filter(array('nav' => $nav_active ?: 'report_commesse', 'dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
+                </div>
+            </form>
+
             <!-- Riepilogo rapido della commessa prima del form di inserimento ore. -->
             <div class="summary-grid">
                 <div class="summary-card">
@@ -35,14 +60,22 @@
                     <div class="value"><span class="badge"><?= html_escape($commessa->stato) ?></span></div>
                 </div>
                 <div class="summary-card">
-                    <div class="label">Periodo</div>
-                    <div class="value"><?= html_escape($commessa->data_inizio ?: 'n.d.') ?></div>
-                    <p class="page-subtitle"><?= html_escape($commessa->data_fine ?: 'n.d.') ?></p>
+                    <div class="label">Totale nel periodo</div>
+                    <div class="value"><?= number_format((float) $totale_ore, 2, ',', '.') ?></div>
                 </div>
                 <div class="summary-card">
-                    <div class="label">Descrizione</div>
-                    <p class="page-subtitle"><?= html_escape($commessa->descrizione) ?></p>
+                    <div class="label">Registrazioni</div>
+                    <div class="value"><?= (int) $totale_registrazioni ?></div>
                 </div>
+                <div class="summary-card">
+                    <div class="label">Periodo</div>
+                    <div class="value"><?= html_escape(($filtri['dal'] ?? 'n.d.') . ' / ' . ($filtri['al'] ?? 'n.d.')) ?></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Descrizione</h2>
+                <div class="notice"><?= html_escape($commessa->descrizione ?: 'Nessuna descrizione inserita.') ?></div>
             </div>
 
             <!-- Form rapido: inserimento ore direttamente dalla scheda commessa. -->

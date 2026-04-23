@@ -17,8 +17,8 @@ class Ore extends MY_Controller
     {
         $this->richiedi_login();
 
-        // La vista personale lavora di default sugli ultimi 30 giorni per evitare liste troppo lunghe.
-        $filtri = $this->leggi_filtri_periodo(true);
+        // Per la vista personale partiamo da oggi, così chi entra vede subito la giornata corrente.
+        $filtri = $this->leggi_filtri_periodo(true, false);
         $utente_id = $this->session->userdata('utente_id');
         $anno_corrente = (int) date('Y');
         $mese_corrente = (int) date('n');
@@ -91,8 +91,10 @@ class Ore extends MY_Controller
     {
         $this->richiedi_admin();
         $this->load->model('Utente_model');
+        $this->load->model('Commessa_model');
 
-        $filtri = $this->leggi_filtri_periodo(false);
+        // Sul dettaglio utente partiamo da un intervallo ampio: è più utile per l'overview.
+        $filtri = $this->leggi_filtri_periodo(false, true);
         $utente = $this->Utente_model->trova_per_id((int) $utente_id);
         if ( ! $utente)
         {
@@ -100,15 +102,39 @@ class Ore extends MY_Controller
             return;
         }
 
+        $commessa_id = trim((string) $this->input->get('commessa_id', true));
+        $commessa_filtrata = null;
+        if ($commessa_id !== '')
+        {
+            $commessa_filtrata = $this->Commessa_model->trova((int) $commessa_id);
+            if ($commessa_filtrata)
+            {
+                $commessa_id = (int) $commessa_id;
+            }
+            else
+            {
+                $commessa_id = null;
+            }
+        }
+
         $anno_corrente = (int) date('Y');
         $mese_corrente = (int) date('n');
+        $nav_active = trim((string) $this->input->get('nav', true));
+        if (! in_array($nav_active, array('report_utenti', 'report_commesse', 'utenti', 'ruoli', 'report', 'ore', 'dashboard'), true))
+        {
+            $nav_active = null;
+        }
         $data = array(
             'utente' => $utente,
-            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al']),
-            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'commesse' => $this->Commessa_model->tutte_con_cliente(),
+            'commessa_filtrata' => $commessa_filtrata,
+            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al'], null, $commessa_id),
+            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
             'totale_ore_mese' => $this->Registrazione_ore_model->totale_ore_utente_mese($utente_id, $anno_corrente, $mese_corrente),
-            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
             'filtri' => $filtri,
+            'commessa_id' => $commessa_id,
+            'nav_active' => $nav_active,
         );
 
         $this->load->view('ore/utente', $data);
@@ -225,16 +251,24 @@ class Ore extends MY_Controller
         return (int) $registrazione->utente_id === (int) $this->session->userdata('utente_id');
     }
 
-    private function leggi_filtri_periodo($default_last_30_days = false)
+    private function leggi_filtri_periodo($default_today = false, $default_last_30_days = false)
     {
         // I filtri arrivano via GET così si possono condividere e ricaricare facilmente.
         $dal = trim((string) $this->input->get('dal', true));
         $al = trim((string) $this->input->get('al', true));
 
-        if ($dal === '' && $al === '' && $default_last_30_days)
+        if ($dal === '' && $al === '')
         {
-            $al = date('Y-m-d');
-            $dal = date('Y-m-d', strtotime('-30 days'));
+            if ($default_today)
+            {
+                $dal = date('Y-m-d');
+                $al = date('Y-m-d');
+            }
+            elseif ($default_last_30_days)
+            {
+                $al = date('Y-m-d');
+                $dal = date('Y-m-d', strtotime('-30 days'));
+            }
         }
 
         return array(
