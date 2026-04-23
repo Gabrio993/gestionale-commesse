@@ -19,6 +19,7 @@
                 <span class="badge"><?= html_escape($email_utente ?? '') ?></span>
             </div>
 
+            <!-- Collegamenti rapidi alle aree operative dell'admin. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Clienti</div>

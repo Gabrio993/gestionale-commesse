@@ -19,6 +19,7 @@
                 <span class="badge success"><?= html_escape($ruolo_utente ?? 'utente') ?></span>
             </div>
 
+            <!-- Tre accessi rapidi: commesse, ore personali e report. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Commessa</div>

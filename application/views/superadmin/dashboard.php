@@ -19,6 +19,7 @@
                 <span class="badge success"><?= html_escape($email_utente ?? '') ?></span>
             </div>
 
+            <!-- Il superadmin ha le stesse scorciatoie dell'admin, più i ruoli. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Clienti</div>

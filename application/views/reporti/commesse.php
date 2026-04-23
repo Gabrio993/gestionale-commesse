@@ -21,6 +21,7 @@
                 </div>
             </div>
 
+            <!-- Tabella aggregata: ogni riga rappresenta una commessa con il totale ore. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

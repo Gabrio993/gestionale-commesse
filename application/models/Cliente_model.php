@@ -6,6 +6,8 @@ class Cliente_model extends MY_Model
 {
     protected $table = 'clienti';
 
+    // Anagrafica clienti: usata soprattutto per collegare le commesse al cliente corretto.
+
     public function tutti($solo_attivi = false)
     {
         if ($solo_attivi)

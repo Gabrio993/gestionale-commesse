@@ -28,6 +28,7 @@
                 Periodo predefinito: ultimi 30 giorni. Se vuoi vedere tutto, lascia vuoti i campi e premi il filtro.
             </div>
 
+            <!-- I filtri sono in GET per permettere di condividere l'URL del report. -->
             <form method="get" action="<?= site_url('reporti') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
                     <div class="field">
@@ -56,6 +57,7 @@
                 </div>
             </form>
 
+            <!-- Card con i totali principali del periodo filtrato. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Totale ore filtrate</div>
@@ -76,6 +78,7 @@
             </div>
 
             <?php if ($globale): ?>
+                <!-- Report sintetico degli utenti: visibile solo ad admin e superadmin. -->
                 <div class="section">
                     <h2>Riepilogo per utenti</h2>
                     <div class="table-wrap">
@@ -109,6 +112,7 @@
                 </div>
             <?php endif; ?>
 
+            <!-- Report per commessa: utile per leggere la distribuzione del lavoro. -->
             <div class="section">
                 <h2>Riepilogo per commesse</h2>
                 <div class="table-wrap">
@@ -141,6 +145,7 @@
                 </div>
             </div>
 
+            <!-- Ultime registrazioni: la vista piu utile per controlli rapidi. -->
             <div class="section">
                 <h2>Ultime registrazioni</h2>
                 <div class="table-wrap">

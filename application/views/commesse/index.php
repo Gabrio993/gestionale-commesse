@@ -27,6 +27,7 @@
                 </div>
             </div>
 
+            <!-- Elenco sintetico: da qui l'utente apre il dettaglio e inserisce ore. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

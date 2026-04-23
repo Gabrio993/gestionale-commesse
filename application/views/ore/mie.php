@@ -43,6 +43,7 @@
                 </div>
             </form>
 
+            <!-- Card di sintesi: aiutano a leggere subito il volume ore del periodo. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Totale nel periodo</div>
@@ -62,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- Riepilogo aggregato per capire come si distribuiscono le ore sulle commesse. -->
             <div class="section">
                 <h2>Riepilogo per commessa</h2>
                 <div class="table-wrap">
@@ -92,6 +94,7 @@
                 </div>
             </div>
 
+            <!-- Lista dettagliata: qui si controllano, modificano o eliminano le singole righe. -->
             <div class="section">
                 <h2>Ultime registrazioni</h2>
                 <div class="table-wrap">

@@ -6,6 +6,8 @@ class Utente_model extends MY_Model
 {
     protected $table = 'utenti';
 
+    // Il model utente è il cuore di login, registrazione e gestione ruoli.
+
     public function trova_per_email($email)
     {
         return $this->db
@@ -39,6 +41,7 @@ class Utente_model extends MY_Model
 
     public function aggiorna_ruolo($utente_id, $ruolo)
     {
+        // Il ruolo viene modificato solo dall'area superadmin.
         return $this->db
             ->where('id', (int) $utente_id)
             ->update($this->table, array('ruolo' => $ruolo));

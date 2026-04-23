@@ -7,6 +7,8 @@ class Auth extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+
+        // Questo controller gestisce tutto il flusso di accesso: landing, login, registrazione e logout.
         $this->load->library('form_validation');
         $this->load->helper(array('form', 'security'));
         $this->load->model('Utente_model');
@@ -14,6 +16,7 @@ class Auth extends MY_Controller
 
     public function index()
     {
+        // Se l'utente è già autenticato, non mostriamo la landing: lo mandiamo direttamente nell'area giusta.
         if ($this->utente_loggato())
         {
             $this->redirect_post_login();
@@ -53,6 +56,7 @@ class Auth extends MY_Controller
             return;
         }
 
+        // Regole minime per poter creare un account pulito.
         $this->form_validation->set_rules('nome', 'Nome', 'required|trim|max_length[100]');
         $this->form_validation->set_rules('cognome', 'Cognome', 'required|trim|max_length[100]');
         $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|max_length[191]');
@@ -67,13 +71,15 @@ class Auth extends MY_Controller
 
         $email = strtolower(trim($this->input->post('email', true)));
 
+        // La mail è univoca: se esiste già, blocchiamo la registrazione.
         if ($this->Utente_model->trova_per_email($email))
         {
-            $data['errore'] = 'Questa email è già registrata.';
+            $data['errore'] = 'Questa email Ã¨ giÃ  registrata.';
             $this->load->view('auth/registrazione', $data);
             return;
         }
 
+        // La password viene salvata solo in forma hashata, mai in chiaro.
         $dati = array(
             'nome' => trim($this->input->post('nome', true)),
             'cognome' => trim($this->input->post('cognome', true)),
@@ -110,6 +116,7 @@ class Auth extends MY_Controller
         $password = $this->input->post('password', true);
         $utente = $this->Utente_model->trova_per_email($email);
 
+        // Il login è valido solo se l'utente esiste, è attivo e la password coincide.
         if ( ! $utente || ! (int) $utente->attivo || ! password_verify($password, $utente->password_hash))
         {
             $data['errore'] = 'Credenziali non valide.';
@@ -117,6 +124,7 @@ class Auth extends MY_Controller
             return;
         }
 
+        // In sessione salviamo solo i dati utili al resto dell'applicazione.
         $this->session->set_userdata(array(
             'utente_id' => $utente->id,
             'utente_nome' => trim($utente->nome . ' ' . $utente->cognome),
@@ -142,6 +150,7 @@ class Auth extends MY_Controller
 
     private function redirect_post_login()
     {
+        // Ogni ruolo viene portato nella sua area naturale.
         if ($this->ruolo_utente() === 'superadmin')
         {
             redirect('superadmin');

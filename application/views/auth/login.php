@@ -17,6 +17,7 @@
     </style>
 </head>
 <body>
+    <!-- Form di login: dopo l'autenticazione il controller decide la dashboard corretta in base al ruolo. -->
     <div class="card">
         <h1>Login</h1>
         <p>Entra con la tua email e password.</p>

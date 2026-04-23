@@ -21,6 +21,7 @@
 
             <?= validation_errors('<div class="notice error">', '</div>') ?>
 
+            <!-- Form essenziale: il nome tecnico viene derivato automaticamente da attivita nel controller. -->
             <form method="post" action="<?= site_url('commesse/salva') ?>" class="form-grid">
                 <div class="field">
                     <label>Cliente</label>

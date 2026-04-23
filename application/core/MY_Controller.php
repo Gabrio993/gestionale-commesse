@@ -23,21 +23,25 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        // La sessione serve in quasi tutto il progetto per sapere chi è loggato e con quale ruolo.
         $this->load->library('session');
     }
 
     protected function utente_loggato()
     {
+        // La presenza di utente_id in sessione è il controllo più semplice per capire se esiste una login valida.
         return (bool) $this->session->userdata('utente_id');
     }
 
     protected function ruolo_utente()
     {
+        // Il ruolo viene salvato in sessione dopo il login e guida tutti i controlli di accesso.
         return (string) $this->session->userdata('utente_ruolo');
     }
 
     protected function richiedi_login()
     {
+        // Se non c'è una sessione valida, riportiamo subito alla landing.
         if ( ! $this->utente_loggato())
         {
             redirect('/');
@@ -47,6 +51,7 @@ class MY_Controller extends CI_Controller
 
     protected function richiedi_admin()
     {
+        // L'area admin è aperta ad admin e superadmin, ma non agli utenti normali.
         $this->richiedi_login();
 
         if ( ! in_array($this->ruolo_utente(), array('admin', 'superadmin'), true))
@@ -58,6 +63,7 @@ class MY_Controller extends CI_Controller
 
     protected function richiedi_superadmin()
     {
+        // Il superadmin è il livello più alto: può gestire anche i ruoli degli utenti.
         $this->richiedi_login();
 
         if ($this->ruolo_utente() !== 'superadmin')

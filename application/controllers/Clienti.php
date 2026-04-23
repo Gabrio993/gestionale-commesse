@@ -14,6 +14,7 @@ class Clienti extends MY_Controller
 
     public function index()
     {
+        // La gestione clienti è riservata ai ruoli operativi.
         $this->richiedi_admin();
 
         $data['clienti'] = $this->Cliente_model->tutti(false);
@@ -36,6 +37,7 @@ class Clienti extends MY_Controller
             return;
         }
 
+        // I campi anagrafici sono volutamente leggeri: il gestionale può crescere in seguito.
         $this->form_validation->set_rules('ragione_sociale', 'Ragione sociale', 'required|trim|max_length[150]');
         $this->form_validation->set_rules('partita_iva', 'Partita IVA', 'trim|max_length[20]');
         $this->form_validation->set_rules('codice_fiscale', 'Codice fiscale', 'trim|max_length[20]');

@@ -19,6 +19,7 @@
                 <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) ?>">Torna alla commessa</a>
                 </div>
 
+            <!-- Inserimento veloce: si registra una sola riga per giorno e commessa. -->
             <div class="app-card" style="box-shadow:none; background: var(--surface-soft); border-style:dashed;">
                 <form method="post" action="<?= site_url('ore/salva') ?>" class="form-grid">
                     <input type="hidden" name="commessa_id" value="<?= (int) $commessa->id ?>">

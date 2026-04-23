@@ -44,7 +44,7 @@
     }
 
     .page-title { margin: 0 0 8px; font-size: 28px; }
-    .page-subtitle { margin: 0; color: var(--muted); }
+    .page-subtitle {  color: var(--muted); }
 
     .app-topbar {
         position: sticky;
@@ -156,7 +156,7 @@
     }
 
     .summary-card .label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
-    .summary-card .value { font-size: 28px; font-weight: 800; }
+    .summary-card .value { font-size: 20px; font-weight: 600; }
 
     .section {
         margin-top: 18px;

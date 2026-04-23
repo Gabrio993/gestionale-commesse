@@ -6,6 +6,7 @@ class Dashboard extends MY_Controller
 {
     public function index()
     {
+        // La home vera dipende dal ruolo: superadmin e admin vengono riallineati alle loro aree.
         $this->richiedi_login();
 
         if ($this->ruolo_utente() === 'superadmin')

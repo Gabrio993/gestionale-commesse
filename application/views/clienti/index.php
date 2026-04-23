@@ -22,6 +22,7 @@
                 </div>
             </div>
 
+            <!-- Elenco clienti, usato come base per collegare le commesse. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

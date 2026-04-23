@@ -22,6 +22,7 @@
                 </div>
             </div>
 
+            <!-- Lista utenti con select ruolo: il superadmin può cambiare solo da qui. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

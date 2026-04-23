@@ -15,6 +15,7 @@
     </style>
 </head>
 <body>
+    <!-- Landing iniziale: il visitatore sceglie se accedere o registrarsi. -->
     <div class="card">
         <h1>Gestionale ore</h1>
         <p>Accedi con le tue credenziali oppure crea un nuovo account interno.</p>

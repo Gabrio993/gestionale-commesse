@@ -22,6 +22,7 @@
                 </div>
             </div>
 
+            <!-- Scheda di sintesi utile per admin e superadmin. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Totale ore</div>
@@ -37,6 +38,7 @@
                 </div>
             </div>
 
+            <!-- Riepilogo per commessa dell'utente selezionato. -->
             <div class="section">
                 <h2>Riepilogo per commessa</h2>
                 <div class="table-wrap">
@@ -67,6 +69,7 @@
                 </div>
             </div>
 
+            <!-- Dettaglio completo delle registrazioni dell'utente. -->
             <div class="section">
                 <h2>Dettaglio ore</h2>
                 <div class="table-wrap">

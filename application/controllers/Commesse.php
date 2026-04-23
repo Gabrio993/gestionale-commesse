@@ -18,6 +18,7 @@ class Commesse extends MY_Controller
     {
         $this->richiedi_login();
 
+        // Mostriamo sempre le commesse attive, così l'utente arriva subito al punto di inserimento ore.
         $data['commesse'] = $this->Commessa_model->tutte(true);
         $this->load->view('commesse/index', $data);
     }
@@ -33,6 +34,7 @@ class Commesse extends MY_Controller
             return;
         }
 
+        // Gli admin vedono tutte le ore, gli utenti normali solo le proprie.
         $ruolo = $this->ruolo_utente();
         $ore_commessa = in_array($ruolo, array('admin', 'superadmin'), true)
             ? $this->Registrazione_ore_model->per_commessa($id)
@@ -66,6 +68,7 @@ class Commesse extends MY_Controller
             return;
         }
 
+        // Il campo visibile è "attivita"; il campo "nome" resta solo tecnico e viene popolato in automatico.
         $this->form_validation->set_rules('cliente_id', 'Cliente', 'required|integer');
         $this->form_validation->set_rules('codice', 'Codice', 'trim|max_length[50]');
         $this->form_validation->set_rules('attivita', 'Attività', 'required|trim|max_length[150]');

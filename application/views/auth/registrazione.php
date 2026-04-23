@@ -17,6 +17,7 @@
     </style>
 </head>
 <body>
+    <!-- Registrazione pubblica: crea un nuovo utente con ruolo base. -->
     <div class="card">
         <h1>Registrazione</h1>
         <p>Crea il tuo account interno.</p>

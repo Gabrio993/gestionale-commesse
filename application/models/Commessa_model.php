@@ -6,6 +6,8 @@ class Commessa_model extends MY_Model
 {
     protected $table = 'commesse';
 
+    // Le query sulle commesse includono quasi sempre il cliente, per questo facciamo la join qui.
+
     public function tutte($solo_attive = true)
     {
         $this->db->select('commesse.*, clienti.ragione_sociale as cliente_ragione_sociale');

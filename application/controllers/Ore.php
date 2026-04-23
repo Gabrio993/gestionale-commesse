@@ -17,6 +17,7 @@ class Ore extends MY_Controller
     {
         $this->richiedi_login();
 
+        // La vista personale lavora di default sugli ultimi 30 giorni per evitare liste troppo lunghe.
         $filtri = $this->leggi_filtri_periodo(true);
         $utente_id = $this->session->userdata('utente_id');
         $anno_corrente = (int) date('Y');
@@ -56,6 +57,7 @@ class Ore extends MY_Controller
             return;
         }
 
+        // Il record ore è minimo: commessa, data, quantità ore e nota libera.
         $this->form_validation->set_rules('commessa_id', 'Commessa', 'required|integer');
         $this->form_validation->set_rules('data_lavoro', 'Data lavoro', 'required');
         $this->form_validation->set_rules('ore', 'Ore', 'required|numeric');
@@ -123,6 +125,7 @@ class Ore extends MY_Controller
             return;
         }
 
+        // Gli utenti normali possono cambiare solo le proprie righe; admin e superadmin possono vedere tutto.
         if ( ! $this->puo_gestire_registrazione($registrazione))
         {
             show_error('Accesso non autorizzato.', 403);
@@ -212,6 +215,7 @@ class Ore extends MY_Controller
 
     private function puo_gestire_registrazione($registrazione)
     {
+        // Admin e superadmin possono agire su tutte le righe; l'utente normale solo sulle sue.
         $ruolo = $this->ruolo_utente();
         if (in_array($ruolo, array('admin', 'superadmin'), true))
         {
@@ -223,6 +227,7 @@ class Ore extends MY_Controller
 
     private function leggi_filtri_periodo($default_last_30_days = false)
     {
+        // I filtri arrivano via GET così si possono condividere e ricaricare facilmente.
         $dal = trim((string) $this->input->get('dal', true));
         $al = trim((string) $this->input->get('al', true));
 

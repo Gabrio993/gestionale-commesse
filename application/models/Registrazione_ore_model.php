@@ -6,6 +6,7 @@ class Registrazione_ore_model extends MY_Model
 {
     protected $table = 'registrazioni_ore';
 
+    // I filtri data sono usati in quasi tutti i report, quindi li centralizziamo qui.
     private function applichi_filtri_data($dal = null, $al = null)
     {
         if (! empty($dal))
@@ -49,6 +50,7 @@ class Registrazione_ore_model extends MY_Model
 
     public function per_utente($utente_id, $dal = null, $al = null, $limite = null)
     {
+        // Qui portiamo dentro anche commessa e cliente: serve per mostrare righe leggibili in UI.
         $this->db->select('registrazioni_ore.*, commesse.codice as commessa_codice, commesse.attivita as commessa_attivita, commesse.nome as commessa_nome, clienti.ragione_sociale as cliente_ragione_sociale');
         $this->db->join('commesse', 'commesse.id = registrazioni_ore.commessa_id', 'left');
         $this->db->join('clienti', 'clienti.id = commesse.cliente_id', 'left');
@@ -114,6 +116,7 @@ class Registrazione_ore_model extends MY_Model
             ->result();
     }
 
+    // I totali sono usati nelle card dei riepiloghi e nei report.
     public function totale_ore_utente($utente_id, $dal = null, $al = null)
     {
         $this->applichi_filtri_data($dal, $al);
@@ -167,6 +170,7 @@ class Registrazione_ore_model extends MY_Model
         return (float) ($row->totale_ore ?? 0);
     }
 
+    // I riepiloghi raggruppano le ore con SUM e GROUP BY per ottenere report sintetici.
     public function riepilogo_ore_per_commessa_utente($utente_id, $dal = null, $al = null)
     {
         $this->applichi_filtri_data($dal, $al);

@@ -19,6 +19,7 @@
                 <a class="btn secondary" href="<?= site_url('ore/mie') ?>">Torna alle mie ore</a>
                 </div>
 
+            <!-- La commessa è bloccata: qui si possono cambiare solo data, ore e note. -->
             <?= validation_errors('<div class="notice error">', '</div>') ?>
 
             <form method="post" action="<?= site_url('ore/aggiorna/' . (int) $registrazione->id) ?>" class="form-grid">

@@ -2,6 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// Superadmin estende Admin: eredita le stesse funzioni e aggiunge la gestione dei ruoli.
 require_once APPPATH.'controllers/Admin.php';
 
 class Superadmin extends Admin
@@ -20,6 +21,7 @@ class Superadmin extends Admin
 
     public function utenti()
     {
+        // Lista utenti completa nell'area superadmin.
         $this->richiedi_superadmin();
         $this->load->model('Utente_model');
 
@@ -29,17 +31,20 @@ class Superadmin extends Admin
 
     public function ruoli()
     {
+        // Alias comodo verso la stessa lista utenti.
         $this->utenti();
     }
 
     public function cambia_ruolo()
     {
+        // Solo il superadmin può promuovere o declassare altri utenti.
         $this->richiedi_superadmin();
         if ($this->input->method(TRUE) !== 'POST')
         {
             show_error('Metodo non consentito.', 405);
             return;
         }
+
         $this->load->library('form_validation');
         $this->load->model('Utente_model');
 

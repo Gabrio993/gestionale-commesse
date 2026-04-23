@@ -21,6 +21,7 @@
                 </div>
             </div>
 
+            <!-- Tabella sintetica per confrontare rapidamente le ore tra utenti. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

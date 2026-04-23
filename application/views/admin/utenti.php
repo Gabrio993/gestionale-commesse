@@ -22,6 +22,7 @@
                 </div>
             </div>
 
+            <!-- Lista utenti: da qui si entra nel dettaglio delle ore di ciascun account. -->
             <div class="table-wrap">
                 <table class="table">
                     <thead>

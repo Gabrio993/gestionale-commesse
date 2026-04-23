@@ -28,6 +28,7 @@
                 </div>
             </div>
 
+            <!-- Riepilogo rapido della commessa prima del form di inserimento ore. -->
             <div class="summary-grid">
                 <div class="summary-card">
                     <div class="label">Stato</div>
@@ -44,6 +45,7 @@
                 </div>
             </div>
 
+            <!-- Form rapido: inserimento ore direttamente dalla scheda commessa. -->
             <div class="section">
                 <h2>Inserisci ore su questa commessa</h2>
                 <div class="app-card" style="box-shadow:none; background: var(--surface-soft); border-style:dashed;">
@@ -68,6 +70,7 @@
                 </div>
             </div>
 
+            <!-- Storico delle registrazioni legate a questa commessa. -->
             <div class="section">
                 <h2>Registrazioni su questa commessa</h2>
                 <div class="table-wrap">

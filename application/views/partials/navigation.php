@@ -3,6 +3,7 @@ $ruolo = $this->session->userdata('utente_ruolo');
 $nome = $this->session->userdata('utente_nome');
 $email = $this->session->userdata('utente_email');
 
+// La navbar usa controller e metodo corrente per evidenziare un solo bottone alla volta.
 $current_class = strtolower($this->router->fetch_class());
 $current_method = strtolower($this->router->fetch_method());
 

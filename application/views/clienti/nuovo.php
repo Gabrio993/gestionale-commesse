@@ -21,6 +21,7 @@
 
             <?= validation_errors('<div class="notice error">', '</div>') ?>
 
+            <!-- Form di inserimento minimo per l'anagrafica cliente. -->
             <form method="post" action="<?= site_url('clienti/salva') ?>" class="form-grid">
                 <div class="field">
                     <label>Ragione sociale</label>

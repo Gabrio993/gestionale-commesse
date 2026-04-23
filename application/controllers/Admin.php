@@ -6,6 +6,7 @@ class Admin extends MY_Controller
 {
     public function index()
     {
+        // L'area admin è visibile sia agli admin sia ai superadmin.
         $this->richiedi_admin();
 
         $data = array(
@@ -18,6 +19,7 @@ class Admin extends MY_Controller
 
     public function utenti()
     {
+        // Qui mostriamo la lista degli utenti, utile per controlli e report.
         $this->richiedi_admin();
         $this->load->model('Utente_model');
 

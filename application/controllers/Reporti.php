@@ -20,6 +20,7 @@ class Reporti extends MY_Controller
         $filtri = $this->leggi_filtri_report();
         $commesse = $this->Commessa_model->tutte_con_cliente();
 
+        // Il report generale cambia in base al ruolo: gli admin vedono tutto, gli utenti solo i propri dati.
         if (in_array($ruolo, array('admin', 'superadmin'), true))
         {
             $filtro_query = array(
@@ -105,6 +106,7 @@ class Reporti extends MY_Controller
 
     private function leggi_filtri_report()
     {
+        // Anche qui i filtri usano GET, così l'URL racconta sempre il report che si sta guardando.
         $dal = trim((string) $this->input->get('dal', true));
         $al = trim((string) $this->input->get('al', true));
         $commessa_id = trim((string) $this->input->get('commessa_id', true));
