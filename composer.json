@@ -10,6 +10,7 @@
 		"source": "https://github.com/bcit-ci/CodeIgniter"
 	},
 	"require": {
-		"php": ">=8.0.0"
+		"php": ">=8.0.0",
+		"phpoffice/phpspreadsheet": "^2.1"
 	}
 }

@@ -11,6 +11,7 @@ class Ore extends MY_Controller
         $this->load->helper('form');
         $this->load->model('Commessa_model');
         $this->load->model('Registrazione_ore_model');
+        $this->load->model('Utente_model');
     }
 
     public function mie()
@@ -30,6 +31,84 @@ class Ore extends MY_Controller
             'filtri' => $filtri,
         );
         $this->load->view('ore/mie', $data);
+    }
+
+    public function export_mie_excel()
+    {
+        $this->richiedi_login();
+
+        $filtri = $this->leggi_filtri_periodo(true, false);
+        $utente_id = (int) $this->session->userdata('utente_id');
+        $utente = $this->Utente_model->trova_per_id($utente_id);
+        $righe = $this->Registrazione_ore_model->registrazioni_filtrate(array(
+            'tipo' => 'personale',
+            'utente_id' => $utente_id,
+            'dal' => $filtri['dal'],
+            'al' => $filtri['al'],
+        ));
+
+        $this->scarica_excel_registrazioni(
+            $righe,
+            array(
+                'titolo_foglio' => 'Le mie ore',
+                'nome_file' => $this->costruisci_nome_file_export('ore', $filtri, $utente),
+                'utente' => $utente,
+                'filtri' => $filtri,
+                'commessa' => null,
+            )
+        );
+    }
+
+    public function export_utente_excel($utente_id)
+    {
+        $this->richiedi_admin();
+
+        $utente = $this->Utente_model->trova_per_id((int) $utente_id);
+        if ( ! $utente)
+        {
+            show_404();
+            return;
+        }
+
+        $filtri = $this->leggi_filtri_periodo(false, true);
+        $commessa_id = trim((string) $this->input->get('commessa_id', true));
+        $commessa_filtrata = null;
+
+        if ($commessa_id !== '')
+        {
+            $commessa_filtrata = $this->Commessa_model->trova((int) $commessa_id);
+            if ($commessa_filtrata)
+            {
+                $commessa_id = (int) $commessa_id;
+            }
+            else
+            {
+                $commessa_id = null;
+            }
+        }
+        else
+        {
+            $commessa_id = null;
+        }
+
+        $righe = $this->Registrazione_ore_model->registrazioni_filtrate(array(
+            'tipo' => 'personale',
+            'utente_id' => (int) $utente->id,
+            'dal' => $filtri['dal'],
+            'al' => $filtri['al'],
+            'commessa_id' => $commessa_id,
+        ));
+
+        $this->scarica_excel_registrazioni(
+            $righe,
+            array(
+                'titolo_foglio' => 'Ore utente',
+                'nome_file' => $this->costruisci_nome_file_export('ore_' . $this->slug_export(trim($utente->nome . ' ' . $utente->cognome)), $filtri, $utente, $commessa_filtrata),
+                'utente' => $utente,
+                'filtri' => $filtri,
+                'commessa' => $commessa_filtrata,
+            )
+        );
     }
 
     public function nuova($commessa_id)
@@ -262,6 +341,161 @@ class Ore extends MY_Controller
         }
 
         return (int) $registrazione->utente_id === (int) $this->session->userdata('utente_id');
+    }
+
+    private function scarica_excel_registrazioni(array $righe, array $opzioni)
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($opzioni['titolo_foglio'] ?? 'Ore');
+
+        $riga_excel = 1;
+        $utente = $opzioni['utente'] ?? null;
+        $filtri = $opzioni['filtri'] ?? array();
+        $commessa = $opzioni['commessa'] ?? null;
+
+        if ($utente)
+        {
+            $sheet->setCellValue('A' . $riga_excel, 'Utente');
+            $sheet->setCellValue('B' . $riga_excel, trim((string) $utente->nome . ' ' . (string) $utente->cognome));
+            $riga_excel++;
+
+            $sheet->setCellValue('A' . $riga_excel, 'Email');
+            $sheet->setCellValue('B' . $riga_excel, (string) $utente->email);
+            $riga_excel++;
+        }
+
+        $sheet->setCellValue('A' . $riga_excel, 'Periodo');
+        $sheet->setCellValue('B' . $riga_excel, $this->formatta_periodo_export($filtri['dal'] ?? null, $filtri['al'] ?? null));
+        $riga_excel++;
+
+        $sheet->setCellValue('A' . $riga_excel, 'Commessa');
+        $sheet->setCellValue('B' . $riga_excel, $this->formatta_etichetta_commessa_export($commessa));
+        $riga_excel += 2;
+
+        $intestazioni = array('Data', 'Ore', 'Codice commessa', 'Attivita', 'Nome commessa', 'Cliente', 'Descrizione');
+        $colonne = array('A', 'B', 'C', 'D', 'E', 'F', 'G');
+        $riga_intestazioni = $riga_excel;
+
+        foreach ($intestazioni as $indice => $intestazione)
+        {
+            $sheet->setCellValue($colonne[$indice] . $riga_intestazioni, $intestazione);
+        }
+
+        $sheet->getStyle('A1:B' . ($riga_intestazioni - 1))->getFont()->setBold(true);
+        $sheet->getStyle('A' . $riga_intestazioni . ':G' . $riga_intestazioni)->getFont()->setBold(true);
+        $sheet->freezePane('A' . ($riga_intestazioni + 1));
+        $sheet->setAutoFilter('A' . $riga_intestazioni . ':G' . $riga_intestazioni);
+
+        $riga_excel = $riga_intestazioni + 1;
+        $totale_ore = 0;
+
+        foreach ($righe as $riga)
+        {
+            $sheet->setCellValue('A' . $riga_excel, (string) $riga->data_lavoro);
+            $sheet->setCellValue('B' . $riga_excel, (float) $riga->ore);
+            $sheet->setCellValue('C' . $riga_excel, (string) $riga->commessa_codice);
+            $sheet->setCellValue('D' . $riga_excel, (string) $riga->commessa_attivita);
+            $sheet->setCellValue('E' . $riga_excel, (string) $riga->commessa_nome);
+            $sheet->setCellValue('F' . $riga_excel, (string) $riga->cliente_ragione_sociale);
+            $sheet->setCellValue('G' . $riga_excel, (string) ($riga->descrizione ?? ''));
+            $totale_ore += (float) $riga->ore;
+            $riga_excel++;
+        }
+
+        $sheet->setCellValue('A' . $riga_excel, 'Totale ore');
+        $sheet->setCellValue('B' . $riga_excel, $totale_ore);
+        $sheet->getStyle('A' . $riga_excel . ':B' . $riga_excel)->getFont()->setBold(true);
+        $sheet->getStyle('B' . ($riga_intestazioni + 1) . ':B' . $riga_excel)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        foreach ($colonne as $colonna)
+        {
+            $sheet->getColumnDimension($colonna)->setAutoSize(true);
+        }
+
+        while (ob_get_level() > 0)
+        {
+            ob_end_clean();
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . ($opzioni['nome_file'] ?? 'export.xlsx') . '"');
+        header('Cache-Control: max-age=0');
+        header('Pragma: public');
+        header('Expires: 0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
+
+    private function costruisci_nome_file_export($prefisso, array $filtri, $utente = null, $commessa = null)
+    {
+        $parti_nome_file = array($prefisso);
+
+        if ($utente)
+        {
+            $parti_nome_file[] = $this->slug_export(trim((string) $utente->nome . ' ' . (string) $utente->cognome));
+        }
+
+        if ($commessa)
+        {
+            $parti_nome_file[] = $this->slug_export($this->formatta_etichetta_commessa_export($commessa));
+        }
+
+        if (! empty($filtri['dal']))
+        {
+            $parti_nome_file[] = $filtri['dal'];
+        }
+
+        if (! empty($filtri['al']) && $filtri['al'] !== $filtri['dal'])
+        {
+            $parti_nome_file[] = $filtri['al'];
+        }
+
+        return implode('_', array_filter($parti_nome_file)) . '.xlsx';
+    }
+
+    private function formatta_periodo_export($dal = null, $al = null)
+    {
+        if (! empty($dal) && ! empty($al))
+        {
+            return $dal . ' - ' . $al;
+        }
+
+        if (! empty($dal))
+        {
+            return 'Dal ' . $dal;
+        }
+
+        if (! empty($al))
+        {
+            return 'Fino al ' . $al;
+        }
+
+        return 'Tutto il periodo';
+    }
+
+    private function formatta_etichetta_commessa_export($commessa = null)
+    {
+        if (! $commessa)
+        {
+            return 'Tutte le commesse';
+        }
+
+        return trim(($commessa->codice ? $commessa->codice . ' - ' : '') . $commessa->attivita);
+    }
+
+    private function slug_export($valore)
+    {
+        $valore = strtolower((string) $valore);
+        $valore = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $valore);
+        $valore = preg_replace('/[^a-z0-9]+/', '_', $valore ?? '');
+        $valore = trim((string) $valore, '_');
+
+        return $valore !== '' ? $valore : 'export';
     }
 
     private function leggi_filtri_periodo($default_today = false, $default_last_30_days = false)

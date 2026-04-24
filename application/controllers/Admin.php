@@ -87,7 +87,23 @@ class Admin extends MY_Controller
             $commesse_ids = array();
         }
 
-        $this->Commessa_model->sincronizza_assegnazioni_utente($utente_id, $commesse_ids);
+        $salvataggio_ok = $this->Commessa_model->sincronizza_assegnazioni_utente($utente_id, $commesse_ids);
+
+        if ( ! $salvataggio_ok)
+        {
+            $this->session->set_flashdata(
+                'notice_error',
+                'Impossibile salvare le assegnazioni commesse per ' . trim($utente->nome . ' ' . $utente->cognome) . '.'
+            );
+        }
+        else
+        {
+            $totale_assegnate = count(array_values(array_unique(array_filter(array_map('intval', $commesse_ids)))));
+            $this->session->set_flashdata(
+                'notice_success',
+                'Assegnazioni commesse salvate per ' . trim($utente->nome . ' ' . $utente->cognome) . '. Totale commesse assegnate: ' . $totale_assegnate . '.'
+            );
+        }
 
         redirect('admin/assegna-commesse/' . (int) $utente_id);
     }

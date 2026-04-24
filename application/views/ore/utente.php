@@ -44,6 +44,11 @@
             {
                 $query_base['nav'] = $nav_active;
             }
+            $url_export_excel = site_url('ore/utente/' . (int) $utente->id . '/export-excel');
+            if (! empty($query_base))
+            {
+                $url_export_excel .= '?' . http_build_query($query_base);
+            }
             ?>
 
             <form method="get" action="<?= site_url('ore/utente/' . (int) $utente->id) ?>" class="form-grid" style="margin-bottom:18px;">
@@ -75,6 +80,7 @@
                     <button class="btn primary" type="submit">Applica filtro</button>
                     <a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) . '?' . http_build_query(array_filter(array_merge(array('nav' => $nav_active ?: 'report_utenti', 'dal' => date('Y-m-d'), 'al' => date('Y-m-d')), ! empty($commessa_id) ? array('commessa_id' => $commessa_id) : array()))) ?>">Oggi</a>
                     <a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) . '?' . http_build_query(array_filter(array_merge(array('nav' => $nav_active ?: 'report_utenti', 'dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')), ! empty($commessa_id) ? array('commessa_id' => $commessa_id) : array()))) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= $url_export_excel ?>">Esporta Excel</a>
                 </div>
             </form>
 

@@ -26,6 +26,14 @@
                 Seleziona una o più commesse. L'utente potrà inserire ore solo su quelle assegnate.
             </div>
 
+            <?php if ($this->session->flashdata('notice_success')): ?>
+                <div class="notice success"><?= html_escape($this->session->flashdata('notice_success')) ?></div>
+            <?php endif; ?>
+
+            <?php if ($this->session->flashdata('notice_error')): ?>
+                <div class="notice error"><?= html_escape($this->session->flashdata('notice_error')) ?></div>
+            <?php endif; ?>
+
             <form method="post" action="<?= site_url('admin/salva-assegnazioni/' . (int) $utente->id) ?>">
                 <div class="table-wrap">
                     <table class="table">

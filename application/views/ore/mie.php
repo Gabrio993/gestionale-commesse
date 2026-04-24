@@ -26,6 +26,23 @@
                 Periodo predefinito: oggi. Puoi cambiare intervallo, tornare a oggi o aprire gli ultimi 30 giorni.
             </div>
 
+            <?php
+            $query_export = array();
+            if (! empty($filtri['dal']))
+            {
+                $query_export['dal'] = $filtri['dal'];
+            }
+            if (! empty($filtri['al']))
+            {
+                $query_export['al'] = $filtri['al'];
+            }
+            $url_export_excel = site_url('ore/mie/export-excel');
+            if (! empty($query_export))
+            {
+                $url_export_excel .= '?' . http_build_query($query_export);
+            }
+            ?>
+
             <form method="get" action="<?= site_url('ore/mie') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
                     <div class="field">
@@ -41,6 +58,7 @@
                     <button class="btn primary" type="submit">Applica filtro</button>
                     <a class="btn secondary" href="<?= site_url('ore/mie') ?>">Oggi</a>
                     <a class="btn secondary" href="<?= site_url('ore/mie?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d')) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= $url_export_excel ?>">Esporta Excel</a>
                 </div>
             </form>
 
