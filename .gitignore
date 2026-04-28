@@ -26,6 +26,9 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 application/config/config.php
 application/config/database.php
 
+# images
+/assets/images/
+
 # dependencies
 /vendor/
 
