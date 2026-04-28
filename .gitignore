@@ -23,7 +23,7 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 .vscode/
 
 # Config and db file
-application/config/congig.php
+application/config/config.php
 application/config/database.php
 
 # dependencies
