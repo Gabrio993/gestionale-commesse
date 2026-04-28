@@ -20,14 +20,39 @@ class Ore extends MY_Controller
 
         // Per la vista personale partiamo da oggi, così chi entra vede subito la giornata corrente.
         $filtri = $this->leggi_filtri_periodo(true, false);
-        $utente_id = $this->session->userdata('utente_id');
+        $utente_id = (int) $this->session->userdata('utente_id');
+        $commesse_assegnate = $this->Commessa_model->commesse_assegnate_a_utente($utente_id);
+        $commessa_id = trim((string) $this->input->get('commessa_id', true));
+        $commessa_filtrata = null;
+
+        if ($commessa_id !== '')
+        {
+            $commessa_id = (int) $commessa_id;
+
+            if ($this->Commessa_model->utente_ha_commessa($utente_id, $commessa_id))
+            {
+                $commessa_filtrata = $this->Commessa_model->trova($commessa_id);
+            }
+            else
+            {
+                $commessa_id = null;
+            }
+        }
+        else
+        {
+            $commessa_id = null;
+        }
+
         $anno_corrente = (int) date('Y');
         $mese_corrente = (int) date('n');
         $data = array(
-            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al']),
-            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'commesse' => $commesse_assegnate,
+            'commessa_filtrata' => $commessa_filtrata,
+            'commessa_id' => $commessa_id,
+            'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al'], null, $commessa_id),
+            'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
             'totale_ore_mese' => $this->Registrazione_ore_model->totale_ore_utente_mese($utente_id, $anno_corrente, $mese_corrente),
-            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al']),
+            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
             'filtri' => $filtri,
         );
         $this->load->view('ore/mie', $data);
@@ -40,21 +65,43 @@ class Ore extends MY_Controller
         $filtri = $this->leggi_filtri_periodo(true, false);
         $utente_id = (int) $this->session->userdata('utente_id');
         $utente = $this->Utente_model->trova_per_id($utente_id);
+        $commessa_id = trim((string) $this->input->get('commessa_id', true));
+        $commessa_filtrata = null;
+
+        if ($commessa_id !== '')
+        {
+            $commessa_id = (int) $commessa_id;
+
+            if ($this->Commessa_model->utente_ha_commessa($utente_id, $commessa_id))
+            {
+                $commessa_filtrata = $this->Commessa_model->trova($commessa_id);
+            }
+            else
+            {
+                $commessa_id = null;
+            }
+        }
+        else
+        {
+            $commessa_id = null;
+        }
+
         $righe = $this->Registrazione_ore_model->registrazioni_filtrate(array(
             'tipo' => 'personale',
             'utente_id' => $utente_id,
             'dal' => $filtri['dal'],
             'al' => $filtri['al'],
+            'commessa_id' => $commessa_id,
         ));
 
         $this->scarica_excel_registrazioni(
             $righe,
             array(
                 'titolo_foglio' => 'Le mie ore',
-                'nome_file' => $this->costruisci_nome_file_export('ore', $filtri, $utente),
+                'nome_file' => $this->costruisci_nome_file_export('ore', $filtri, $utente, $commessa_filtrata),
                 'utente' => $utente,
                 'filtri' => $filtri,
-                'commessa' => null,
+                'commessa' => $commessa_filtrata,
             )
         );
     }

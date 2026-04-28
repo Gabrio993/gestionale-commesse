@@ -28,17 +28,20 @@
 
             <?php
             $query_export = array();
-    if (! empty($filtri['dal'])) {
-        $query_export['dal'] = $filtri['dal'];
-    }
-    if (! empty($filtri['al'])) {
-        $query_export['al'] = $filtri['al'];
-    }
-    $url_export_excel = site_url('ore/mie/export-excel');
-    if (! empty($query_export)) {
-        $url_export_excel .= '?' . http_build_query($query_export);
-    }
-    ?>
+            if (! empty($filtri['dal'])) {
+                $query_export['dal'] = $filtri['dal'];
+            }
+            if (! empty($filtri['al'])) {
+                $query_export['al'] = $filtri['al'];
+            }
+            if (! empty($commessa_id)) {
+                $query_export['commessa_id'] = $commessa_id;
+            }
+            $url_export_excel = site_url('ore/mie/export-excel');
+            if (! empty($query_export)) {
+                $url_export_excel .= '?' . http_build_query($query_export);
+            }
+            ?>
 
             <form method="get" action="<?= site_url('ore/mie') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
@@ -50,11 +53,22 @@
                         <label>Al</label>
                         <input type="date" name="al" value="<?= html_escape($filtri['al'] ?? '') ?>">
                     </div>
+                    <div class="field">
+                        <label>Commessa</label>
+                        <select name="commessa_id">
+                            <option value="">Tutte le commesse assegnate</option>
+                            <?php foreach ($commesse as $commessa): ?>
+                                <option value="<?= (int) $commessa->id ?>" <?= (string) ($commessa_id ?? '') === (string) $commessa->id ? 'selected' : '' ?>>
+                                    <?= html_escape(trim(($commessa->codice ? $commessa->codice . ' - ' : '') . $commessa->attivita)) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="actions-inline">
                     <button class="btn primary" type="submit">Applica</button>
                     <a class="btn secondary" href="<?= site_url('ore/mie') ?>">Oggi</a>
-                    <a class="btn secondary" href="<?= site_url('ore/mie?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d')) ?>">Ultimi 30 giorni</a>
+                    <a class="btn secondary" href="<?= site_url('ore/mie?dal=' . date('Y-m-d', strtotime('-30 days')) . '&al=' . date('Y-m-d') . (! empty($commessa_id) ? '&commessa_id=' . (int) $commessa_id : '')) ?>">Ultimi 30 giorni</a>
                     <a class="btn secondary" href="<?= $url_export_excel ?>">Esporta Excel</a>
                 </div>
             </form>
