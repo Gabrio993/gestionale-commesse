@@ -65,6 +65,18 @@ class Ore extends MY_Controller
         $filtri = $this->leggi_filtri_periodo(true, false);
         $utente_id = (int) $this->session->userdata('utente_id');
         $utente = $this->Utente_model->trova_per_id($utente_id);
+        $commesse_assegnate = $this->Commessa_model->commesse_assegnate_a_utente($utente_id);
+
+        if (empty($commesse_assegnate))
+        {
+            $this->session->set_flashdata('notice_error', 'Impossibile esportare: non sono presenti commesse assegnate al tuo account.');
+            redirect('ore/mie' . $this->costruisci_query_string(array(
+                'dal' => $filtri['dal'],
+                'al' => $filtri['al'],
+            )));
+            return;
+        }
+
         $commessa_id = trim((string) $this->input->get('commessa_id', true));
         $commessa_filtrata = null;
 
@@ -118,6 +130,19 @@ class Ore extends MY_Controller
         }
 
         $filtri = $this->leggi_filtri_periodo(false, true);
+        $commesse_assegnate = $this->Commessa_model->commesse_assegnate_a_utente((int) $utente->id, false);
+
+        if (empty($commesse_assegnate))
+        {
+            $this->session->set_flashdata('notice_error', 'Impossibile esportare: non sono presenti commesse assegnate a questo utente.');
+            redirect('ore/utente/' . (int) $utente->id . $this->costruisci_query_string(array(
+                'dal' => $filtri['dal'],
+                'al' => $filtri['al'],
+                'nav' => $this->input->get('nav', true),
+            )));
+            return;
+        }
+
         $commessa_id = trim((string) $this->input->get('commessa_id', true));
         $commessa_filtrata = null;
 
@@ -543,6 +568,20 @@ class Ore extends MY_Controller
         $valore = trim((string) $valore, '_');
 
         return $valore !== '' ? $valore : 'export';
+    }
+
+    private function costruisci_query_string(array $parametri)
+    {
+        $parametri = array_filter($parametri, static function ($valore) {
+            return $valore !== null && $valore !== '';
+        });
+
+        if (empty($parametri))
+        {
+            return '';
+        }
+
+        return '?' . http_build_query($parametri);
     }
 
     private function leggi_filtri_periodo($default_today = false, $default_last_30_days = false)

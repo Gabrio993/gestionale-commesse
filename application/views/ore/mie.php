@@ -26,6 +26,10 @@
                 Periodo predefinito: oggi. Puoi cambiare intervallo, tornare a oggi o aprire gli ultimi 30 giorni.
             </div>
 
+            <?php if ($this->session->flashdata('notice_error')): ?>
+                <div class="notice error"><?= html_escape($this->session->flashdata('notice_error')) ?></div>
+            <?php endif; ?>
+
             <?php
             $query_export = array();
             if (! empty($filtri['dal'])) {

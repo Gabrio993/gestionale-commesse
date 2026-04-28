@@ -26,6 +26,10 @@
                 <?= ! empty($commessa_filtrata) ? 'Stai guardando il periodo selezionato sulla commessa: ' . html_escape(($commessa_filtrata->codice ? $commessa_filtrata->codice . ' - ' : '') . $commessa_filtrata->attivita) : 'Periodo predefinito: ultimi 30 giorni. Puoi cambiare intervallo o restringere il dettaglio a una commessa.' ?>
             </div>
 
+            <?php if ($this->session->flashdata('notice_error')): ?>
+                <div class="notice error"><?= html_escape($this->session->flashdata('notice_error')) ?></div>
+            <?php endif; ?>
+
             <?php
             $query_base = array();
     if (! empty($filtri['dal'])) {
