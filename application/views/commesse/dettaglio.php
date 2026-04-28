@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="actions-inline">
-                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <button class="btn primary" type="submit">Applica</button>
                     <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) . '?' . http_build_query(array_filter(array('nav' => $nav_active ?: 'report_commesse', 'dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
                     <a class="btn secondary" href="<?= site_url('commesse/dettaglio/' . (int) $commessa->id) . '?' . http_build_query(array_filter(array('nav' => $nav_active ?: 'report_commesse', 'dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
                 </div>

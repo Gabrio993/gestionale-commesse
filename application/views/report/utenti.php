@@ -28,19 +28,16 @@
 
             <?php
             $query_base = array();
-            if (! empty($filtri['dal']))
-            {
-                $query_base['dal'] = $filtri['dal'];
-            }
-            if (! empty($filtri['al']))
-            {
-                $query_base['al'] = $filtri['al'];
-            }
-            if (! empty($filtri['commessa_id']))
-            {
-                $query_base['commessa_id'] = $filtri['commessa_id'];
-            }
-            ?>
+    if (! empty($filtri['dal'])) {
+        $query_base['dal'] = $filtri['dal'];
+    }
+    if (! empty($filtri['al'])) {
+        $query_base['al'] = $filtri['al'];
+    }
+    if (! empty($filtri['commessa_id'])) {
+        $query_base['commessa_id'] = $filtri['commessa_id'];
+    }
+    ?>
 
             <form method="get" action="<?= site_url('report/utenti') ?>" class="form-grid" style="margin-bottom:18px;">
                 <div class="summary-grid" style="margin:0;">
@@ -65,7 +62,7 @@
                     </div>
                 </div>
                 <div class="actions-inline">
-                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <button class="btn primary" type="submit">Applica</button>
                     <a class="btn secondary" href="<?= site_url('report/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Oggi</a>
                     <a class="btn secondary" href="<?= site_url('report/utenti?' . http_build_query(array_filter(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d'), 'commessa_id' => $filtri['commessa_id'] ?? null)))) ?>">Ultimi 30 giorni</a>
                 </div>

@@ -6,7 +6,7 @@
         --surface-soft: #f9fafb;
         --text: #1f2937;
         --muted: #6b7280;
-        --border: #e5e7eb;
+        --border: #dcdce2;
         --accent: #111827;
         --accent-soft: #374151;
         --success: #065f46;
@@ -193,13 +193,12 @@
     }
 
     .table th {
-        background: var(--surface-soft);
+        background: var(--accent-soft);
         font-size: 13px;
         text-transform: uppercase;
         letter-spacing: .03em;
-        color: var(--muted);
+        color: var(--border);
     }
-
     .actions-inline {
         display: flex;
         flex-wrap: wrap;
@@ -218,11 +217,12 @@
         cursor: pointer;
     }
 
-    .btn.primary { background: var(--accent); color: #fff; }
-    .btn.primary:hover { background: var(--bg); color: var(--accent); border: 1px solid var(--accent); }
-    .btn.secondary { background: #fff; color: var(--text); border-color: var(--border); }
-    .btn.secondary:hover { background: var(--accent); color: #fff; }
-    .btn.danger { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+    .btn.primary { background: var(--accent-soft); color: var(--bg); }
+    .btn.primary:hover { background: var(--bg); color: var(--accent); border: 1px solid var(--accent-soft); }
+    .btn.secondary { background: var(--bg); color: var(--text); border-color: var(--border); }
+    .btn.secondary:hover { background: var(--accent-soft); color: var(--bg); }
+    .btn.danger { background: var(--bg); color: var(--danger); border-color: var(--border); }
+    .btn.danger:hover { background: var(--danger); color: var(--bg); border-color: var(--border); }
 
     .form-grid {
         display: grid;

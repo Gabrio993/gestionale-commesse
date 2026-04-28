@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="actions-inline">
-                    <button class="btn primary" type="submit">Applica filtro</button>
+                    <button class="btn primary" type="submit">Applica</button>
                     <a class="btn secondary" href="<?= site_url('report/commesse?' . http_build_query(array('dal' => date('Y-m-d'), 'al' => date('Y-m-d')))) ?>">Oggi</a>
                     <a class="btn secondary" href="<?= site_url('report/commesse?' . http_build_query(array('dal' => date('Y-m-d', strtotime('-30 days')), 'al' => date('Y-m-d')))) ?>">Ultimi 30 giorni</a>
                 </div>
