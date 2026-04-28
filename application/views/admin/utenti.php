@@ -53,7 +53,7 @@
                                     <td><?= html_escape($utente->email) ?></td>
                                     <td><span class="badge"><?= html_escape($utente->ruolo) ?></span></td>
                                     <td><?= (int) $utente->attivo ? 'Si' : 'No' ?></td>
-                                    <td><a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) ?>">Apri</a></td>
+                                    <td><a class="btn secondary" href="<?= site_url('ore/utente/' . (int) $utente->id) . '?' . http_build_query(array('nav' => 'utenti')) ?>">Apri</a></td>
                                     <td><a class="btn secondary" href="<?= site_url('admin/assegna-commesse/' . (int) $utente->id) ?>">Assegna</a></td>
                                     <td>
                                         <form method="post" class="actions-inline" action="<?= site_url('admin/reset-password/' . (int) $utente->id) ?>" onsubmit="return confirm('Vuoi reimpostare la password di questo utente?');">

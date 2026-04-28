@@ -283,6 +283,7 @@ class Ore extends MY_Controller
 
         $anno_corrente = (int) date('Y');
         $mese_corrente = (int) date('n');
+        $riepilogo_commesse = $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id);
         $nav_active = trim((string) $this->input->get('nav', true));
         if (! in_array($nav_active, array('report_utenti', 'report_commesse', 'utenti', 'ruoli', 'report', 'ore', 'dashboard'), true))
         {
@@ -295,7 +296,11 @@ class Ore extends MY_Controller
             'ore' => $this->Registrazione_ore_model->per_utente($utente_id, $filtri['dal'], $filtri['al'], null, $commessa_id),
             'totale_ore' => $this->Registrazione_ore_model->totale_ore_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
             'totale_ore_mese' => $this->Registrazione_ore_model->totale_ore_utente_mese($utente_id, $anno_corrente, $mese_corrente),
-            'riepilogo_commesse' => $this->Registrazione_ore_model->riepilogo_ore_per_commessa_utente($utente_id, $filtri['dal'], $filtri['al'], $commessa_id),
+            'riepilogo_commesse' => $riepilogo_commesse,
+            'grafico_commesse' => $this->prepara_grafico_commesse($riepilogo_commesse),
+            'grafico_giorni' => $this->prepara_grafico_giorni(
+                $this->Registrazione_ore_model->riepilogo_ore_per_giorno($filtri['dal'], $filtri['al'], $utente_id, $commessa_id)
+            ),
             'filtri' => $filtri,
             'commessa_id' => $commessa_id,
             'nav_active' => $nav_active,
@@ -582,6 +587,50 @@ class Ore extends MY_Controller
         }
 
         return '?' . http_build_query($parametri);
+    }
+
+    private function prepara_grafico_commesse(array $riepilogo_commesse)
+    {
+        $labels = array();
+        $valori = array();
+
+        foreach ($riepilogo_commesse as $riga)
+        {
+            $label = trim((string) $riga->codice);
+            if ($label !== '' && ! empty($riga->attivita))
+            {
+                $label .= ' - ' . $riga->attivita;
+            }
+            elseif (! empty($riga->attivita))
+            {
+                $label = $riga->attivita;
+            }
+
+            $labels[] = $label;
+            $valori[] = (float) $riga->totale_ore;
+        }
+
+        return array(
+            'labels' => $labels,
+            'values' => $valori,
+        );
+    }
+
+    private function prepara_grafico_giorni(array $riepilogo_giorni)
+    {
+        $labels = array();
+        $valori = array();
+
+        foreach ($riepilogo_giorni as $riga)
+        {
+            $labels[] = $riga->data_lavoro;
+            $valori[] = (float) $riga->totale_ore;
+        }
+
+        return array(
+            'labels' => $labels,
+            'values' => $valori,
+        );
     }
 
     private function leggi_filtri_periodo($default_today = false, $default_last_30_days = false)
