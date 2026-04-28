@@ -339,6 +339,15 @@
                 return Number(value || 0).toFixed(2).replace('.', ',');
             }
 
+            function fmtAxisLabel(value) {
+                const raw = String(value || '');
+                if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                    const parts = raw.split('-');
+                    return `${parts[2]}/${parts[1]}`;
+                }
+                return raw;
+            }
+
             function renderDonut(labels, values) {
                 const total = values.reduce((sum, value) => sum + Number(value || 0), 0);
                 const size = 320;
@@ -416,13 +425,13 @@
                     const h = Number(value || 0) * scale;
                     const x = padding.left + (index * (barWidth + gap));
                     const y = padding.top + chartHeight - h;
-                    const label = labels[index];
+                    const label = fmtAxisLabel(labels[index]);
                     return `
                         <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="8" fill="#111827"></rect>
-                        <text x="${x + (barWidth / 2)}" y="${padding.top + chartHeight + 13}" text-anchor="middle" font-size="8" fill="#6b7280">
+                        <text x="${x + (barWidth / 2)}" y="${padding.top + chartHeight + 12}" text-anchor="middle" font-size="6" fill="#6b7280">
                             ${escapeHtml(label)}
                         </text>
-                        <text x="${x + (barWidth / 2)}" y="${y - 3}" text-anchor="middle" font-size="8" font-weight="700" fill="#111827">
+                        <text x="${x + (barWidth / 2)}" y="${y - 3}" text-anchor="middle" font-size="7" font-weight="700" fill="#111827">
                             ${fmtHours(value)}
                         </text>
                     `;
