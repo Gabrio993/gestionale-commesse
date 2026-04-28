@@ -1,4 +1,4 @@
-# Gestionale Ore
+# Gestionale Ore - Commesse
 
 Questo progetto è un piccolo gestionale web sviluppato in PHP su base CodeIgniter.
 
